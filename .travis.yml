@@ -49,3 +49,5 @@ before_script:
 # - sudo systemctl start mysql
 - mysql --version
 - echo "before_script Complete"
+
+before_install: cd backend
