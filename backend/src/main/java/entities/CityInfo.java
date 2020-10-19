@@ -20,14 +20,12 @@ public class CityInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    private Integer id;
-
     @Column(length = 4)
     private String zipCode;
     @Column(length = 35)
     private String city;
     
-    @OneToMany
+//    @OneToMany
     private Address address;
 
 

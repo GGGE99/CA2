@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -28,6 +30,7 @@ public class Person implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Temporal(TemporalType.DATE)
     private Date birthday;
     private String name;
     private String gender;
@@ -35,8 +38,8 @@ public class Person implements Serializable {
     @OneToMany(mappedBy = "person", cascade = CascadeType.PERSIST)
     private List<Phone> phones;
 //    @ManyToOne
-//    private Address address;
-    @ManyToMany(mappedBy = "person", cascade = CascadeType.PERSIST)
+    private Address address;
+    @ManyToMany(mappedBy = "persons", cascade = CascadeType.PERSIST)
     private List<Hobby> hobbies;
 
     public Person() {
