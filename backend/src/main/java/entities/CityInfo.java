@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,40 +21,36 @@ public class CityInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @Column(length = 4)
+    private String zipCode;
+    @Column(length = 35)
+    private String city;
 
-    public Integer getId() {
-        return id;
+    public CityInfo() {
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CityInfo)) {
-            return false;
-        }
-        CityInfo other = (CityInfo) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public CityInfo(String zipCode, String city) {
+        this.zipCode = zipCode;
+        this.city = city;
     }
 
-    @Override
-    public String toString() {
-        return "entities.CityInfo[ id=" + id + " ]";
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
-    
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public String getCity() {
+        return city;
+    }
 }
