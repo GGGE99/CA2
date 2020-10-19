@@ -7,6 +7,8 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,12 +32,12 @@ public class Person implements Serializable {
     private String name;
     private String gender;
     private String email;
-    @OneToMany
-    private Phone phone;
-    @ManyToOne
-    private Address address;
-    @ManyToMany
-    private Hobby hobby;
+    @OneToMany(mappedBy = "person", cascade = CascadeType.PERSIST)
+    private List<Phone> phones;
+//    @ManyToOne
+//    private Address address;
+    @ManyToMany(mappedBy = "person", cascade = CascadeType.PERSIST)
+    private List<Hobby> hobbies;
 
     public Person() {
     }
@@ -46,18 +48,18 @@ public class Person implements Serializable {
             String name, 
             String gender, 
             String email, 
-            Phone phone, 
+            List<Phone> phones, 
             Address address, 
-            Hobby hobby)
+            List<Hobby> hobbies)
     {
         this.id = id;
         this.birthday = birthday;
         this.name = name;
         this.gender = gender;
         this.email = email;
-        this.phone = phone;
+        this.phones = phones;
         this.address = address;
-        this.hobby = hobby;
+        this.hobbies = hobbies;
     }
     
     
@@ -102,13 +104,6 @@ public class Person implements Serializable {
         this.email = email;
     }
 
-    public Phone getPhone() {
-        return phone;
-    }
-
-    public void setPhone(Phone phone) {
-        this.phone = phone;
-    }
 
     public Address getAddress() {
         return address;
@@ -116,18 +111,5 @@ public class Person implements Serializable {
 
     public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public Hobby getHobby() {
-        return hobby;
-    }
-
-    public void setHobby(Hobby hobby) {
-        this.hobby = hobby;
-    }
-    
-    
-
-    
-    
+    }    
 }
