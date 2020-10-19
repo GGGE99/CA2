@@ -37,7 +37,7 @@ public class Person implements Serializable {
     private String email;
     @OneToMany(mappedBy = "person", cascade = CascadeType.PERSIST)
     private List<Phone> phones;
-//    @ManyToOne
+    @ManyToOne
     private Address address;
     @ManyToMany(mappedBy = "persons", cascade = CascadeType.PERSIST)
     private List<Hobby> hobbies;

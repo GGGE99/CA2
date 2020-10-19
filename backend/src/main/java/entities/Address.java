@@ -6,10 +6,14 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -22,6 +26,22 @@ public class Address implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    
+    @OneToMany(mappedBy = "address", cascade = CascadeType.PERSIST)
+    private List<Person> person;
+    private String street;
+    @ManyToOne
+    private CityInfo cityInfo;
+
+    public Address() {
+    }
+
+    public Address(List<Person> person, String street, CityInfo cityInfo) {
+        this.person = person;
+        this.street = street;
+        this.cityInfo = cityInfo;
+    }
+
 
     public Integer getId() {
         return id;
@@ -31,29 +51,23 @@ public class Address implements Serializable {
         this.id = id;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public String getStreet() {
+        return street;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Address)) {
-            return false;
-        }
-        Address other = (Address) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
-    @Override
-    public String toString() {
-        return "entities.Address[ id=" + id + " ]";
+    public CityInfo getCityInfo() {
+        return cityInfo;
     }
+
+    public void setCityInfo(CityInfo cityInfo) {
+        this.cityInfo = cityInfo;
+    }
+    
+    
+   
     
 }

@@ -6,9 +6,12 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 /**
@@ -24,13 +27,19 @@ public class CityInfo implements Serializable {
     private String zipCode;
     @Column(length = 35)
     private String city;
+    @OneToMany(mappedBy = "cityInfo", cascade = CascadeType.PERSIST)
+    private List<Address> address;
     
-//    @OneToMany
-    private Address address;
-
-
     public CityInfo() {
     }
+
+    public CityInfo(String zipCode, String city, List<Address> address) {
+        this.zipCode = zipCode;
+        this.city = city;
+        this.address = address;
+    }
+    
+    
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
