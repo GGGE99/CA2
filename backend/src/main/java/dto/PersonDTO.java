@@ -7,6 +7,7 @@ package dto;
 
 import java.util.List;
 import entities.*;
+import java.util.Date;
 
 /**
  *
@@ -18,22 +19,26 @@ public class PersonDTO {
     private String name;
     private String gender;
     private String email;
-    private String birthday;
+    private Date birthday;
     private List<Phone> phones;
-    private Address address;
+    private String street;
+    private String zipCode;
+    private String city;
     private List<Hobby> hobbies;
 
     public PersonDTO() {
     }
 
-    public PersonDTO(String name, String gender, String email, String birthday, List<Phone> phones, Address address, List<Hobby> hobbies) {
-        this.name = name;
-        this.gender = gender;
-        this.email = email;
-        this.birthday = birthday;
-        this.phones = phones;
-        this.address = address;
-        this.hobbies = hobbies;
+    public PersonDTO(Person p) {
+        this.name = p.getName();
+        this.gender = p.getGender();
+        this.email = p.getEmail();
+        this.birthday = p.getBirthday();
+        this.street = p.getAddress().getStreet();
+        this.zipCode = p.getAddress().getCityInfo().getZipCode();
+        this.city = p.getAddress().getCityInfo().getCity();
+        //this.phones = p.;
+        //this.hobbies = hobbies;
     }
 
     public Integer getId() {
@@ -68,11 +73,11 @@ public class PersonDTO {
         this.email = email;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
@@ -84,13 +89,31 @@ public class PersonDTO {
         this.phones = phones;
     }
 
-    public Address getAddress() {
-        return address;
+    public String getStreet() {
+        return street;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setStreet(String street) {
+        this.street = street;
     }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+
 
     public List<Hobby> getHobbies() {
         return hobbies;

@@ -46,7 +46,7 @@ public class Person implements Serializable {
     }
 
     public Person(
-            Integer id, 
+            
             Date birthday, 
             String name, 
             String gender, 
@@ -55,7 +55,7 @@ public class Person implements Serializable {
             Address address, 
             List<Hobby> hobbies)
     {
-        this.id = id;
+        
         this.birthday = birthday;
         this.name = name;
         this.gender = gender;
