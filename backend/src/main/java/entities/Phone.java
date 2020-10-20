@@ -22,13 +22,10 @@ public class Phone implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
     @Column(length = 8)
     private String number;
     @Column(length = 3)
     private String description;
-    
     @ManyToOne
     private Person person;
 
