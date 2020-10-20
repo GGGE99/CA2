@@ -7,6 +7,8 @@ package dto;
 
 import java.util.List;
 import entities.*;
+import static entities.ghy636765.Person_.hobbies;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -23,7 +25,7 @@ public class PersonDTO {
     private String street;
     private String zipCode;
     private String city;
-    private List<Hobby> hobbies;
+    private List<Integer> hobbiesID;
     private List<Phone> phones;
 
 
@@ -39,7 +41,14 @@ public class PersonDTO {
         this.zipCode = p.getAddress().getCityInfo().getZipCode();
         this.city = p.getAddress().getCityInfo().getCity();
         this.phones = p.getPhones();
-        this.hobbies = p.getHobbies();
+        hobbiesID = new ArrayList();
+        for (Hobby h : p.getHobbies()) {
+            this.hobbiesID.add(h.getId());
+        }
+    }
+    
+    public void addID(int id){
+        hobbiesID.add(id);
     }
 
     public Integer getId() {
@@ -116,17 +125,17 @@ public class PersonDTO {
 
 
 
-    public List<Hobby> getHobbies() {
-        return hobbies;
+    public List<Integer> getHobbies() {
+        return hobbiesID;
     }
 
-    public void setHobbies(List<Hobby> hobbies) {
-        this.hobbies = hobbies;
+    public void setHobbies(List<Integer> hobbies) {
+        this.hobbiesID = hobbies;
     }
 
     @Override
     public String toString() {
-        return "PersonDTO{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", email=" + email + ", birthday=" + birthday + ", street=" + street + ", zipCode=" + zipCode + ", city=" + city + ", hobbies=" + hobbies + ", phones=" + phones + '}';
+        return "PersonDTO{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", email=" + email + ", birthday=" + birthday + ", street=" + street + ", zipCode=" + zipCode + ", city=" + city + ", hobbies=" + hobbiesID + ", phones=" + phones + '}';
     }
     
     

@@ -41,7 +41,7 @@ public class Person implements Serializable {
     private Address address;
     @OneToMany(mappedBy = "person", cascade = CascadeType.PERSIST)
     private List<Phone> phones;
-    @ManyToMany(mappedBy = "persons")
+    @ManyToMany(mappedBy = "persons", cascade = CascadeType.PERSIST)
     private List<Hobby> hobbies;
 
     public Person() {
@@ -54,7 +54,7 @@ public class Person implements Serializable {
         this.email = dto.getEmail();
         this.phones = dto.getPhones();
         this.address = new Address(dto.getStreet());
-        this.hobbies = dto.getHobbies();
+        this.hobbies = new ArrayList();
     }
 
     public Person(

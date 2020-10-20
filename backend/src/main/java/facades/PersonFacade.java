@@ -61,13 +61,15 @@ public class PersonFacade {
     }
 
     public PersonDTO addPerson(PersonDTO personDTO) throws MissingInputException {
-
         EntityManager em = getEntityManager();
         Person person2 = new Person(personDTO);
         Query query = em.createQuery("SELECT c FROM CityInfo c WHERE c.zipCode = :zipcode");
         query.setParameter("zipcode", personDTO.getZipCode());
         CityInfo cityInfo = (CityInfo) query.getSingleResult();
         person2.getAddress().setCityInfo(cityInfo);
+        for (int i : personDTO.getHobbies()) {
+            person2.addHobby(em.find(Hobby.class, i));
+        }
         try {
             em.getTransaction().begin();
             em.persist(person2);

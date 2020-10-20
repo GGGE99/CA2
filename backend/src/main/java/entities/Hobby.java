@@ -48,6 +48,10 @@ public class Hobby implements Serializable {
         this.persons = new ArrayList();
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     public void addPerson(Person person) {
         this.persons.add(person);
     }
