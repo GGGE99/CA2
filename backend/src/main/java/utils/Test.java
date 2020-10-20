@@ -29,23 +29,27 @@ public class Test {
     public static void main(String[] args) throws MissingInputException {
         EntityManager em = emf.createEntityManager();
 
-        Person person1 = new Person(Date.valueOf("2020-10-10"), "IDK", "LORT", "adasdadadasd@sdasdasd.cascas");
-        Phone phone = new Phone("42411111", "+45");
-        Address address = new Address("LORTegade 21",new CityInfo("8732"));
+//        Person person1 = new Person(Date.valueOf("2020-10-10"), "IDK", "LORT", "adasdadadasd@sdasdasd.cascas");
+//        Phone phone = new Phone("42422211", "+45");
+//        Address address = new Address("LORTegade 21",new CityInfo("8732"));
+//
+//        person1.addPhone(phone);
+//        person1.setAddress(address);
+//
+//
+//        PersonDTO personDTO = new PersonDTO(person1);
+//        personDTO.addID(125);
+//        Facade.addPerson(personDTO);
+        
+        Person person2 = new Person(Date.valueOf("2020-10-10"), "Marcus", "LORT", "adasdadadasd@sdasdasd.cascas");
+        Phone phone2 = new Phone("42421111", "+45");
+        Address address2 = new Address("LORTegade 21",new CityInfo("8732"));
 
-//        Hobby hobby = Facade.findHobbyById(121);
-//        
-//            
-//        person1.addHobby(hobby);
-        person1.addPhone(phone);
-        person1.setAddress(address);
-
-//        System.out.println(person);
-        PersonDTO personDTO = new PersonDTO(person1);
-        personDTO.addID(125);
-//        System.out.println(personDTO);
-
-//        PersonDTO dto = new PersonDTO(person);
-        Facade.addPerson(personDTO);
+        person2.addPhone(phone2);
+        person2.setAddress(address2);
+        PersonDTO personDTO2 = new PersonDTO(person2);
+        personDTO2.addID(5);
+        personDTO2.setId(15);
+        Facade.editPerson(personDTO2);
     }
 }

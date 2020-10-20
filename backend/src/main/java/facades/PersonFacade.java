@@ -14,6 +14,7 @@ import entities.Person;
 import entities.Phone;
 import exceptions.MissingInputException;
 import exceptions.PersonNotFoundException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -79,14 +80,56 @@ public class PersonFacade {
             for (Phone p : personDTO.getPhones()) {
                 person2.addPhone(p);
             }
-            
-            em.persist(person2);
+
             em.getTransaction().commit();
         } finally {
             em.close();
         }
+        return new PersonDTO(person2);
+    }
 
-        return null;
+    public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
+        EntityManager em = getEntityManager();
+
+        Person person;
+        person = em.find(Person.class, personDTO.getId());
+        ArrayList<Hobby> hobbies = new ArrayList();
+
+        for (int i : personDTO.getHobbies()) {
+            hobbies.add(em.find(Hobby.class, i));
+        }
+
+        person.setId(personDTO.getId());
+        person.setName(personDTO.getName());
+        person.setBirthday(personDTO.getBirthday());
+        person.setEmail(personDTO.getEmail());
+        person.setGender(personDTO.getGender());
+        person.setPhones(personDTO.getPhones());
+        CityInfo cityInfo = new CityInfo(personDTO.getZipCode());
+        Address address = new Address(personDTO.getStreet(), cityInfo);
+        person.setAddress(address);
+        person.setHobbies(hobbies);
+        
+        //todo se om adresse er der i forvejen og finde ud af hvordan fuck vi opdater det her 
+
+        try {
+//            em.getTransaction().begin();
+//
+////            Query query = em.createQuery("SELECT c FROM CityInfo c WHERE c.zipCode = :zipcode");
+////            query.setParameter("zipcode", personDTO.getZipCode());
+////            CityInfo cityInfo = (CityInfo) query.getSingleResult();
+////            person.setAddress(new Address(personDTO.getStreet(), cityInfo));
+////            for (int i : personDTO.getHobbies()) {
+////                person.addHobby(em.find(Hobby.class, i));
+////            }
+//            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        System.out.println(person);
+
+        System.out.println(new PersonDTO(person));
+        return new PersonDTO(person);
     }
 
     public PersonDTO findPersonByPhone(String phoneNr) {

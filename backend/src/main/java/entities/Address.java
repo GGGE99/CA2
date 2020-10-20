@@ -78,4 +78,11 @@ public class Address implements Serializable {
         this.street = street;
     }
 
+    @Override
+    public String toString() {
+        return "Address{" + "id=" + id + ", street=" + street + ", cityInfo=" + cityInfo + '}';
+    }
+
+    
+    
 }

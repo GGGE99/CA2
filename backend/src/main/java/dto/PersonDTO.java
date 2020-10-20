@@ -7,7 +7,6 @@ package dto;
 
 import java.util.List;
 import entities.*;
-import static entities.ghy636765.Person_.hobbies;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -33,6 +32,7 @@ public class PersonDTO {
     }
 
     public PersonDTO(Person p) {
+        this.id = p.getId();    
         this.name = p.getName();
         this.gender = p.getGender();
         this.email = p.getEmail();
