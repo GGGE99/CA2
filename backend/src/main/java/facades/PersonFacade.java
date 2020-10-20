@@ -81,14 +81,13 @@ public class PersonFacade {
         return null;
     }
 
-    public Hobby findHobbyById(int id) {
+    public PersonDTO findPersonByPhone(String phoneNr) {
         EntityManager em = getEntityManager();
-        try {
-            return em.find(Hobby.class, id);
-        } catch (Exception e) {
+        Query query = em.createQuery("SELECT p FROM Person p WHERE phone.number = :phoneNr");
+        query.setParameter("phoneNr", phoneNr);
+        Person person = (Person) query.getSingleResult();
+        return new PersonDTO(person);
 
-        }
-        return null;
     }
 
     public PersonDTO deletePerson(long id) throws PersonNotFoundException {
