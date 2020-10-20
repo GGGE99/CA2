@@ -52,8 +52,7 @@ public class Person implements Serializable {
         this.name = dto.getName();
         this.gender = dto.getGender();
         this.email = dto.getEmail();
-        this.phones = dto.getPhones();
-        this.address = new Address(dto.getStreet());
+        this.phones = new ArrayList();
         this.hobbies = new ArrayList();
     }
 

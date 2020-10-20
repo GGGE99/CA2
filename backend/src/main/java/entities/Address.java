@@ -37,8 +37,9 @@ public class Address implements Serializable {
     public Address() {
     }
 
-    public Address(String street) {
+    public Address(String street, CityInfo cityInfo) {
         this.street = street;
+        this.cityInfo = cityInfo;
         this.persons = new ArrayList();
     }
 

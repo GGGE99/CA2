@@ -30,15 +30,14 @@ public class Test {
         EntityManager em = emf.createEntityManager();
 
         Person person1 = new Person(Date.valueOf("2020-10-10"), "IDK", "LORT", "adasdadadasd@sdasdasd.cascas");
-        Phone phone = new Phone("11112222", "+45");
-        Address address = new Address("LORTegade 21");
-        CityInfo cityInfo = new CityInfo("8732");
+        Phone phone = new Phone("42411111", "+45");
+        Address address = new Address("LORTegade 21",new CityInfo("8732"));
+
 //        Hobby hobby = Facade.findHobbyById(121);
 //        
 //            
 //        person1.addHobby(hobby);
         person1.addPhone(phone);
-        address.setCityInfo(cityInfo);
         person1.setAddress(address);
 
 //        System.out.println(person);
