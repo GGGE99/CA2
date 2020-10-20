@@ -6,12 +6,14 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 
 /**
@@ -25,14 +27,14 @@ public class Hobby implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @Column(length = 50)
     private String name;
-    
     private String wikiLink;
     private String category;
     private String type;
+
     @ManyToMany
+    @JoinColumn(name = "persons_ID")
     private List<Person> persons;
 
     public Hobby() {
@@ -43,6 +45,11 @@ public class Hobby implements Serializable {
         this.wikiLink = wikiLink;
         this.category = category;
         this.type = type;
+        this.persons = new ArrayList();
+    }
+
+    public void addPerson(Person person) {
+        this.persons.add(person);
     }
 
     public String getName() {
@@ -76,6 +83,12 @@ public class Hobby implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Hobby{" + "id=" + id + ", name=" + name + ", wikiLink=" + wikiLink + ", category=" + category + ", type=" + type + '}';
+    }
     
     
+
 }

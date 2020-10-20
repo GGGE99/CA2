@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -26,9 +27,9 @@ public class Address implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
-    @OneToMany(mappedBy = "address", cascade = CascadeType.PERSIST)
-    private List<Person> person;
+
+    @OneToMany(mappedBy = "address")
+    private List<Person> persons;
     private String street;
     @ManyToOne
     private CityInfo cityInfo;
@@ -36,13 +37,30 @@ public class Address implements Serializable {
     public Address() {
     }
 
-    public Address(List<Person> person, String street, CityInfo cityInfo) {
-        this.person = person;
+    public Address(String street) {
         this.street = street;
-        this.cityInfo = cityInfo;
+        this.persons = new ArrayList();
     }
 
+    public void addPerson(Person person) {
+        this.persons.add(person);
+    }
 
+    public void setCityInfo(CityInfo cityInfo) {
+        if (cityInfo != null) {
+            this.cityInfo = cityInfo;
+            cityInfo.addAddress(this);
+        } else {
+            this.cityInfo = null;
+        }
+    }
+
+    public CityInfo getCityInfo() {
+        return cityInfo;
+    }
+
+    
+    
     public Integer getId() {
         return id;
     }
@@ -59,15 +77,4 @@ public class Address implements Serializable {
         this.street = street;
     }
 
-    public CityInfo getCityInfo() {
-        return cityInfo;
-    }
-
-    public void setCityInfo(CityInfo cityInfo) {
-        this.cityInfo = cityInfo;
-    }
-    
-    
-   
-    
 }

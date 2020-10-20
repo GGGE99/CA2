@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class Phone implements Serializable {
     private String number;
     @Column(length = 3)
     private String description;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Person person;
 
     public Phone() {
@@ -35,6 +36,10 @@ public class Phone implements Serializable {
     public Phone(String number, String description) {
         this.number = number;
         this.description = description;
+    }
+    
+    public void addPerson(Person person) {
+        this.person = person;
     }
 
     public String getNumber() {
@@ -51,6 +56,11 @@ public class Phone implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Phone{" + "number=" + number + ", description=" + description + ", person=" + person + '}';
     }
     
     

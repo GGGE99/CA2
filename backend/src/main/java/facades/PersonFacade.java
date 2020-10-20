@@ -8,7 +8,10 @@ package facades;
 import dto.PersonDTO;
 import dto.PersonsDTO;
 import entities.Address;
+import entities.CityInfo;
+import entities.Hobby;
 import entities.Person;
+import entities.Phone;
 import exceptions.MissingInputException;
 import exceptions.PersonNotFoundException;
 import java.util.Date;
@@ -57,35 +60,34 @@ public class PersonFacade {
         }
     }
 
-/*
-    public PersonDTO addPerson(Person person) throws MissingInputException {
-//        if ((fName.length() == 0) || (lName.length() == 0)) {
-//            throw new MissingInputException("First Name and/or Last Name is missing");
-//        }
-        EntityManager em = getEntityManager();
-       
+    public PersonDTO addPerson(PersonDTO personDTO) throws MissingInputException {
 
+        EntityManager em = getEntityManager();
+        Person person2 = new Person(personDTO);
+        Query query = em.createQuery("SELECT c FROM CityInfo c WHERE c.zipCode = :zipcode");
+        query.setParameter("zipcode", personDTO.getZipCode());
+        CityInfo cityInfo = (CityInfo) query.getSingleResult();
+        person2.getAddress().setCityInfo(cityInfo);
         try {
             em.getTransaction().begin();
-            //Good luck marc
-//            Query query = em.createQuery("SELECT a FROM Address a WHERE a.street = :street AND a.zip = :zip AND a.city = :city");
-//            query.setParameter("street", street);
-//            query.setParameter("zip", zip);
-//            query.setParameter("city", city);
-           // List<Address> addresses = query.getResultList();
-            if (addresses.size() > 0) {
-                person.setAddress(addresses.get(0)); // The address already exists
-            } else {
-                person.setAddress(new Address(street, zip, city));
-            }
-            em.persist(person);
+            em.persist(person2);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
-        return new PersonDTO(person);
-    }*/
 
+        return null;
+    }
+
+    public Hobby findHobbyById(int id) {
+        EntityManager em = getEntityManager();
+        try {
+            return em.find(Hobby.class, id);
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
 
     public PersonDTO deletePerson(long id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
@@ -104,7 +106,6 @@ public class PersonFacade {
         }
     }
 
-
     public PersonDTO getPerson(long id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
 
@@ -120,7 +121,6 @@ public class PersonFacade {
         }
     }
 
-
     public PersonsDTO getAllPersons() {
         EntityManager em = getEntityManager();
         try {
@@ -130,7 +130,7 @@ public class PersonFacade {
         }
     }
 
-/*
+    /*
     public PersonDTO editPerson(PersonDTO p) throws PersonNotFoundException, MissingInputException {
         if ((p.getfName().length() == 0) || (p.getlName().length() == 0)) {
             throw new MissingInputException("First Name and/or Last Name is missing");
@@ -159,5 +159,5 @@ public class PersonFacade {
         }
 
     }
-    */
+     */
 }

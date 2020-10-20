@@ -20,11 +20,12 @@ public class PersonDTO {
     private String gender;
     private String email;
     private Date birthday;
-    private List<Phone> phones;
     private String street;
     private String zipCode;
     private String city;
     private List<Hobby> hobbies;
+    private List<Phone> phones;
+
 
     public PersonDTO() {
     }
@@ -37,8 +38,8 @@ public class PersonDTO {
         this.street = p.getAddress().getStreet();
         this.zipCode = p.getAddress().getCityInfo().getZipCode();
         this.city = p.getAddress().getCityInfo().getCity();
-        //this.phones = p.;
-        //this.hobbies = hobbies;
+        this.phones = p.getPhones();
+        this.hobbies = p.getHobbies();
     }
 
     public Integer getId() {
@@ -122,5 +123,12 @@ public class PersonDTO {
     public void setHobbies(List<Hobby> hobbies) {
         this.hobbies = hobbies;
     }
+
+    @Override
+    public String toString() {
+        return "PersonDTO{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", email=" + email + ", birthday=" + birthday + ", street=" + street + ", zipCode=" + zipCode + ", city=" + city + ", hobbies=" + hobbies + ", phones=" + phones + '}';
+    }
+    
+    
 
 }

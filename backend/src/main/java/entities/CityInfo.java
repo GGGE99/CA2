@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,30 +28,32 @@ public class CityInfo implements Serializable {
     private String zipCode;
     @Column(length = 35)
     private String city;
-    @OneToMany(mappedBy = "cityInfo", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "cityInfo")
     private List<Address> address;
     
     public CityInfo() {
     }
 
-    public CityInfo(String zipCode, String city, List<Address> address) {
+    public CityInfo(String zipCode, String city) {
         this.zipCode = zipCode;
         this.city = city;
-        this.address = address;
+        this.address = new ArrayList();
     }
     
+     public CityInfo(String zipCode) {
+        this.zipCode = zipCode;
+        this.address = new ArrayList();
+    }
     
+    public void addAddress(Address address){
+        this.address.add(address);
+    }
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 
     public void setCity(String city) {
-        this.city = city;
-    }
-
-    public CityInfo(String zipCode, String city) {
-        this.zipCode = zipCode;
         this.city = city;
     }
 

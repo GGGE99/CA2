@@ -5,7 +5,9 @@
  */
 package entities;
 
+import dto.PersonDTO;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -35,37 +37,68 @@ public class Person implements Serializable {
     private String name;
     private String gender;
     private String email;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Address address;
     @OneToMany(mappedBy = "person", cascade = CascadeType.PERSIST)
     private List<Phone> phones;
-    @ManyToOne
-    private Address address;
-    @ManyToMany(mappedBy = "persons", cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "persons")
     private List<Hobby> hobbies;
 
     public Person() {
     }
 
+    public Person(PersonDTO dto) {
+        this.birthday = dto.getBirthday();
+        this.name = dto.getName();
+        this.gender = dto.getGender();
+        this.email = dto.getEmail();
+        this.phones = dto.getPhones();
+        this.address = new Address(dto.getStreet());
+        this.hobbies = dto.getHobbies();
+    }
+
     public Person(
-            
-            Date birthday, 
-            String name, 
-            String gender, 
-            String email, 
-            List<Phone> phones, 
-            Address address, 
-            List<Hobby> hobbies)
-    {
-        
+            Date birthday,
+            String name,
+            String gender,
+            String email
+    ) {
+
         this.birthday = birthday;
         this.name = name;
         this.gender = gender;
         this.email = email;
-        this.phones = phones;
-        this.address = address;
-        this.hobbies = hobbies;
+        this.phones = new ArrayList();
+        this.hobbies = new ArrayList();
+
     }
-    
-    
+
+    public void setAddress(Address address) {
+        if (address != null) {
+            this.address = address;
+            address.addPerson(this);
+        } else {
+            this.address = null;
+        }
+    }
+
+    public void addPhone(Phone phone) {
+        if (phone != null) {
+            this.phones.add(phone);
+            phone.addPerson(this);
+        }
+    }
+
+    public void addHobby(Hobby hobby) {
+        if (hobby != null) {
+            this.hobbies.add(hobby);
+            hobby.addPerson(this);
+        }
+    }
+
+    public Address getAddress() {
+        return address;
+    }
 
     public Integer getId() {
         return id;
@@ -107,12 +140,27 @@ public class Person implements Serializable {
         this.email = email;
     }
 
-
-    public Address getAddress() {
-        return address;
+    public List<Phone> getPhones() {
+        return phones;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }    
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
+    }
+
+    public List<Hobby> getHobbies() {
+        return hobbies;
+    }
+
+    public void setHobbies(List<Hobby> hobbies) {
+        this.hobbies = hobbies;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" + "id=" + id + ", birthday=" + birthday + ", name=" + name + ", gender=" + gender + ", email=" + email + ", hobbies=" + hobbies + '}';
+    }
+
+    
+
 }
