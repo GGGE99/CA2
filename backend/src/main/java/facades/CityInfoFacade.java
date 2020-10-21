@@ -44,7 +44,7 @@ public class CityInfoFacade {
     public List<CityInfo> getAllZips() {
         EntityManager em = getEntityManager();
         try {
-            ArrayList<CityInfo> cityInfos = new ArrayList<>(em.createNamedQuery("CityInfo.getAllRows").getResultList()); 
+            ArrayList<CityInfo> cityInfos = new ArrayList<>(em.createQuery("SELECT c FROM CityInfo c").getResultList()); 
             return cityInfos;
         } finally {
             em.close();
