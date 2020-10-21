@@ -59,12 +59,13 @@ public class Person implements Serializable {
     }
 
     public Person(
+            int id,
             Date birthday,
             String name,
             String gender,
             String email
     ) {
-
+        this.id = id;
         this.birthday = birthday;
         this.name = name;
         this.gender = gender;
@@ -88,6 +89,17 @@ public class Person implements Serializable {
             this.phones.add(phone);
             phone.addPerson(this);
         }
+    }
+
+    public void removePhone(Phone phone) {
+        phone.setPerson(null);
+        this.hobbies.remove(phone);
+
+    }
+
+    public void removeHobby(Hobby hobby) {
+        hobby.removePerson(this);
+        this.hobbies.remove(hobby);
     }
 
     public void addHobby(Hobby hobby) {
@@ -161,9 +173,5 @@ public class Person implements Serializable {
     public String toString() {
         return "Person{" + "id=" + id + ", birthday=" + birthday + ", name=" + name + ", gender=" + gender + ", email=" + email + ", address=" + address + ", phones=" + phones + ", hobbies=" + hobbies + '}';
     }
-
-
-
-    
 
 }
