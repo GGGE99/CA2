@@ -6,20 +6,13 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
-<<<<<<< Updated upstream
-=======
 import exceptions.MissingInputException;
->>>>>>> Stashed changes
 import java.sql.Date;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-<<<<<<< Updated upstream
-import org.glassfish.grizzly.http.util.Header;
-=======
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
->>>>>>> Stashed changes
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,10 +27,7 @@ public class FacadeExampleTest {
 
     private static EntityManagerFactory emf;
     private static PersonFacade facade;
-<<<<<<< Updated upstream
-=======
     private static Person p1, p2, p3;
->>>>>>> Stashed changes
     private static PersonDTO pDTO, pDTO2, pDTO3;
 
     public FacadeExampleTest() {
@@ -45,11 +35,9 @@ public class FacadeExampleTest {
 
     @BeforeAll
     public static void setUpClass() {
-<<<<<<< Updated upstream
-=======
+
         emf = EMF_Creator.createEntityManagerFactoryForTest();
         facade = PersonFacade.getFacadeExample(emf);
->>>>>>> Stashed changes
 
     }
 
@@ -113,10 +101,6 @@ public class FacadeExampleTest {
 
     // TODO: Delete or change this method 
     @Test
-<<<<<<< Updated upstream
-    public void testAFacadeMethod() {
-
-=======
     public void testAddPerson() throws MissingInputException {
         Person p1 = new Person(Date.valueOf("2000-01-01"), "Peter Madsen", "Mand", "ubåd@mail.com");
         Phone ph1 = new Phone("12345678", "+45");
@@ -134,7 +118,6 @@ public class FacadeExampleTest {
         PersonDTO expResult = new PersonDTO(p1);
         assertEquals(expResult, result);
             
->>>>>>> Stashed changes
     }
 
 }
