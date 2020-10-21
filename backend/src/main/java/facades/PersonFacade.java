@@ -89,6 +89,7 @@ public class PersonFacade {
         return new PersonDTO(person2);
     }
 
+
 //    public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
 //        EntityManager em = getEntityManager();
 //
@@ -108,6 +109,32 @@ public class PersonFacade {
 //            em.getTransaction().commit();
 //
 //            System.out.println(person);
+
+//    public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
+//        EntityManager em = getEntityManager();
+//
+//        Person person;
+//        person = em.find(Person.class, personDTO.getId());
+//        ArrayList<Hobby> hobbies = new ArrayList();
+//
+//        for (int i : personDTO.getHobbies()) {
+//            hobbies.add(em.find(Hobby.class, i));
+//        }
+//
+//        person.setId(personDTO.getId());
+//        person.setName(personDTO.getName());
+//        person.setBirthday(personDTO.getBirthday());
+//        person.setEmail(personDTO.getEmail());
+//        person.setGender(personDTO.getGender());
+//        person.setPhones(personDTO.getPhones());
+//        CityInfo cityInfo = new CityInfo(personDTO.getZipCode());
+//        Address address = new Address(personDTO.getStreet(), cityInfo);
+//        person.setAddress(address);
+//        person.setHobbies(hobbies);
+//
+//        //todo se om adresse er der i forvejen og finde ud af hvordan fuck vi opdater det her 
+//        try {
+//
 //            em.getTransaction().begin();
 //
 //            person.setName(personDTO.getName());
@@ -132,12 +159,21 @@ public class PersonFacade {
 //        }
 //    }
 
-    public PersonDTO findPersonByPhone(String phoneNr) {
+    public List<String> findPersonByPhone(String number) {
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("SELECT p FROM Person p WHERE phone.number = :phoneNr");
-        query.setParameter("phoneNr", phoneNr);
-        Person person = (Person) query.getSingleResult();
-        return new PersonDTO(person);
+        List<String> personAndShit = new ArrayList<>();
+
+        Query query = em.createQuery("Select pers.name, pers.birthday, pers.email, pho.number, adr.street, cInf.city, cInf.zipCode, \n"
+                + "hob.name, hob.category, hob.type, hob.wikiLink \n"
+                + "from Person pers\n"
+                + "join pers.phones pho\n"
+                + "join pers.hobbies hob\n"
+                + "join pers.address adr\n"
+                + "join adr.cityInfo cInf\n"
+                + "where pho.number = :number");
+        query.setParameter("number", number);
+        personAndShit = query.getResultList();
+        return personAndShit;
 
     }
 

@@ -5,19 +5,23 @@
  */
 package facades;
 
+import dto.HobbyDTO;
 import entities.Hobby;
 import exceptions.PersonNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 /**
  *
  * @author baske
  */
 public class HobbyFacade {
-        private static HobbyFacade instance;
+
+    private static HobbyFacade instance;
     private static EntityManagerFactory emf;
 
     //Private Constructor to ensure Singleton
@@ -50,18 +54,18 @@ public class HobbyFacade {
             em.close();
         }
     }
-    
-        public List<Hobby> getAllZips() {
+
+    public List<Hobby> getAllZips() {
         EntityManager em = getEntityManager();
         try {
-            ArrayList<Hobby> hobbies = new ArrayList<>(em.createNamedQuery("Hobby.getAllRows").getResultList()); 
+            ArrayList<Hobby> hobbies = new ArrayList<>(em.createNamedQuery("Hobby.getAllRows").getResultList());
             return hobbies;
         } finally {
             em.close();
         }
     }
-    
-        public Hobby getHobby(int id) throws PersonNotFoundException {
+
+    public Hobby getHobby(int id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
 
         try {
@@ -75,5 +79,25 @@ public class HobbyFacade {
             em.close();
         }
     }
+
+    public List<HobbyDTO> allHobbies() {
+        EntityManager em = getEntityManager();
+        List<HobbyDTO> listHobbies = new ArrayList<>();
+
+        try {
+            Query query = em.createQuery("SELECT h FROM Hobby h");
+            listHobbies = query.getResultList();
+            return listHobbies;
+
+        } catch (Exception e) {
+            //catch fejl her
+        } finally {
+
+            em.close();
+        }
+
+        return listHobbies;
+    }
+    
     
 }
