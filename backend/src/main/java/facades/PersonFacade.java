@@ -65,11 +65,6 @@ public class PersonFacade {
         EntityManager em = getEntityManager();
         Person person2 = new Person(personDTO);
         try {
-            em.getTransaction().begin();
-            em.persist(person2);
-            em.getTransaction().commit();
-
-            em.getTransaction().begin();
             Query query = em.createQuery("SELECT c FROM CityInfo c WHERE c.zipCode = :zipcode");
             query.setParameter("zipcode", personDTO.getZipCode());
             CityInfo cityInfo = (CityInfo) query.getSingleResult();
@@ -81,55 +76,88 @@ public class PersonFacade {
                 person2.addPhone(p);
             }
 
+            em.getTransaction().begin();
+            em.persist(person2);
             em.getTransaction().commit();
+//
+//            em.getTransaction().begin();
+//
+//            em.getTransaction().commit();
         } finally {
             em.close();
         }
         return new PersonDTO(person2);
     }
 
-    public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
-        EntityManager em = getEntityManager();
 
-        Person person;
-        person = em.find(Person.class, personDTO.getId());
-        ArrayList<Hobby> hobbies = new ArrayList();
+//    public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
+//        EntityManager em = getEntityManager();
+//
+//        ArrayList<Hobby> hobbies = new ArrayList();
+//
+//        //todo se om adresse er der i forvejen og finde ud af hvordan fuck vi opdater det her 
+//        try {
+//            Person person = em.find(Person.class, personDTO.getId());
+//
+//            for (int i : personDTO.getHobbies()) {
+//                hobbies.add(em.find(Hobby.class, i));
+//            }
+//            em.getTransaction().begin();
+//            em.createQuery("DELETE FROM Phone WHERE Person_id = 7").executeUpdate();
+////            query.setParameter("id", personDTO.getId()).executeUpdate();
+//            System.out.println(personDTO.getId());
+//            em.getTransaction().commit();
+//
+//            System.out.println(person);
 
-        for (int i : personDTO.getHobbies()) {
-            hobbies.add(em.find(Hobby.class, i));
-        }
-
-        person.setId(personDTO.getId());
-        person.setName(personDTO.getName());
-        person.setBirthday(personDTO.getBirthday());
-        person.setEmail(personDTO.getEmail());
-        person.setGender(personDTO.getGender());
-        person.setPhones(personDTO.getPhones());
-        CityInfo cityInfo = new CityInfo(personDTO.getZipCode());
-        Address address = new Address(personDTO.getStreet(), cityInfo);
-        person.setAddress(address);
-        person.setHobbies(hobbies);
-
-        //todo se om adresse er der i forvejen og finde ud af hvordan fuck vi opdater det her 
-        try {
+//    public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
+//        EntityManager em = getEntityManager();
+//
+//        Person person;
+//        person = em.find(Person.class, personDTO.getId());
+//        ArrayList<Hobby> hobbies = new ArrayList();
+//
+//        for (int i : personDTO.getHobbies()) {
+//            hobbies.add(em.find(Hobby.class, i));
+//        }
+//
+//        person.setId(personDTO.getId());
+//        person.setName(personDTO.getName());
+//        person.setBirthday(personDTO.getBirthday());
+//        person.setEmail(personDTO.getEmail());
+//        person.setGender(personDTO.getGender());
+//        person.setPhones(personDTO.getPhones());
+//        CityInfo cityInfo = new CityInfo(personDTO.getZipCode());
+//        Address address = new Address(personDTO.getStreet(), cityInfo);
+//        person.setAddress(address);
+//        person.setHobbies(hobbies);
+//
+//        //todo se om adresse er der i forvejen og finde ud af hvordan fuck vi opdater det her 
+//        try {
+//
 //            em.getTransaction().begin();
 //
-////            Query query = em.createQuery("SELECT c FROM CityInfo c WHERE c.zipCode = :zipcode");
-////            query.setParameter("zipcode", personDTO.getZipCode());
+//            person.setName(personDTO.getName());
+//            person.setBirthday(personDTO.getBirthday());
+//            person.setEmail(personDTO.getEmail());
+//            person.setGender(personDTO.getGender());
+////            person.getPhones().personDTO.getPhones());
+//
 ////            CityInfo cityInfo = (CityInfo) query.getSingleResult();
-////            person.setAddress(new Address(personDTO.getStreet(), cityInfo));
-////            for (int i : personDTO.getHobbies()) {
-////                person.addHobby(em.find(Hobby.class, i));
+////            CityInfo cityInfo = new CityInfo(personDTO.getZipCode());
+////            Address address = new Address(personDTO.getStreet(), cityInfo);
+////            person.setAddress(address);
+////            for (Hobby hobby : person.getHobbies()) {
+////                hobby.s
 ////            }
+//            person.setHobbies(hobbies);
+////            System.out.println(person);
 //            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
-        System.out.println(person);
-
-        System.out.println(new PersonDTO(person));
-        return new PersonDTO(person);
-    }
+//            return new PersonDTO(person);
+//        } finally {
+//            em.close();
+//        }
+//    }
 
     public List<String> findPersonByPhone(String number) {
         EntityManager em = getEntityManager();
