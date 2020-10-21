@@ -57,6 +57,20 @@ public class Person implements Serializable {
         this.phones = new ArrayList();
         this.hobbies = new ArrayList();
     }
+     public Person(
+            Date birthday,
+            String name,
+            String gender,
+            String email
+    ) {
+        this.birthday = birthday;
+        this.name = name;
+        this.gender = gender;
+        this.email = email;
+        this.phones = new ArrayList();
+        this.hobbies = new ArrayList();
+
+    }
 
     public Person(
             int id,
