@@ -53,6 +53,8 @@ public class Test {
 //        personDTO2.setId(15);
 //        Facade.editPerson(personDTO2);
         
-        System.out.println(HobbyFacade.getHobbyFacade(emf).allHobbies());
+        //System.out.println(HobbyFacade.getHobbyFacade(emf).allHobbies());
+        
+        Facade.findPersonByPhone("11112222");
     }
 }
