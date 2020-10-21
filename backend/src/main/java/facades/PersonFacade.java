@@ -20,6 +20,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -97,12 +98,9 @@ public class PersonFacade {
 
     public Person editPersonHobby(int personID, List<Integer> hobbies) throws MissingInputException {
         EntityManager em = getEntityManager();
-//        Person p = em.find(Person.class, personID);
         Person p = em.find(Person.class, personID);
         em.getTransaction().begin();
-        System.out.println(p.getHobbies());
         for (Hobby hobby : p.getHobbies()) {
-            System.out.println(hobby);
             hobby.removePerson(p);
         }
         for (int i : hobbies) {
@@ -116,7 +114,6 @@ public class PersonFacade {
         EntityManager em = getEntityManager();
         Person p = em.find(Person.class, personID);
         try {
-
             em.getTransaction().begin();
             for (Phone phone : p.getPhones()) {
                 em.remove(em.find(Phone.class, phone.getNumber()));
@@ -130,13 +127,10 @@ public class PersonFacade {
     }
 
     public Person editPersonAddPhone(int personID, List<Phone> phones) {
-
         EntityManager em = getEntityManager();
         Person p = em.find(Person.class, personID);
-
         em.getTransaction().begin();
         for (Phone phone : phones) {
-            System.out.println(phone);
             p.addPhone(phone);
         }
         em.persist(p);
@@ -150,14 +144,11 @@ public class PersonFacade {
         try {
             person = editPersonPhone(personDTO.getId(), personDTO.getPhones());
             person = editPersonHobby(personDTO.getId(), personDTO.getHobbies());
-            System.out.println(person);
-
             person.setName(personDTO.getName());
             person.setBirthday(personDTO.getBirthday());
             person.setEmail(personDTO.getEmail());
             person.setGender(personDTO.getGender());
             person.setAddress(new Address(personDTO.getStreet(), new CityInfo(personDTO.getZipCode())));
-
             em.getTransaction().begin();
             em.merge(person);
             em.getTransaction().commit();
@@ -167,22 +158,22 @@ public class PersonFacade {
         }
     }
 
-    public List<String> findPersonByPhone(String number) {
+    public PersonDTO findPersonByPhone(String number) {
         EntityManager em = getEntityManager();
-        List<String> personAndShit = new ArrayList<>();
+        Phone p = em.find(Phone.class, number);
+        Person person = p.getPerson();
+        return new PersonDTO(person);
 
-        Query query = em.createQuery("Select pers.name, pers.birthday, pers.email, pho.number, adr.street, cInf.city, cInf.zipCode, \n"
-                + "hob.name, hob.category, hob.type, hob.wikiLink \n"
-                + "from Person pers\n"
-                + "join pers.phones pho\n"
-                + "join pers.hobbies hob\n"
-                + "join pers.address adr\n"
-                + "join adr.cityInfo cInf\n"
-                + "where pho.number = :number");
-        query.setParameter("number", number);
-        personAndShit = query.getResultList();
-        return personAndShit;
-
+//        Query query = em.createQuery("Select pers.name, pers.birthday, pers.email, pho.number, adr.street, cInf.city, cInf.zipCode, \n"
+//                + "hob.name, hob.category, hob.type, hob.wikiLink \n"
+//                + "from Person pers\n"
+//                + "join pers.phones pho\n"
+//                + "join pers.hobbies hob\n"
+//                + "join pers.address adr\n"
+//                + "join adr.cityInfo cInf\n"
+//                + "where pho.number = :number");
+//        query.setParameter("number", number);
+//        Person personDTO = query.getSingleResult();
     }
 
     public PersonDTO deletePerson(long id) throws PersonNotFoundException {
