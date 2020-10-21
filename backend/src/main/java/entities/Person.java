@@ -15,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -42,6 +43,7 @@ public class Person implements Serializable {
     @OneToMany(mappedBy = "person", cascade = CascadeType.PERSIST)
     private List<Phone> phones;
     @ManyToMany(mappedBy = "persons", cascade = CascadeType.PERSIST)
+    @JoinTable(name = "Hobby_Person")
     private List<Hobby> hobbies;
 
     public Person() {
