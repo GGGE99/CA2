@@ -55,16 +55,6 @@ public class HobbyFacade {
         }
     }
 
-    public List<Hobby> getAllZips() {
-        EntityManager em = getEntityManager();
-        try {
-            ArrayList<Hobby> hobbies = new ArrayList<>(em.createNamedQuery("Hobby.getAllRows").getResultList());
-            return hobbies;
-        } finally {
-            em.close();
-        }
-    }
-
     public Hobby getHobby(int id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
 
