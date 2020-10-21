@@ -12,6 +12,7 @@ import entities.Hobby;
 import entities.Person;
 import entities.Phone;
 import exceptions.MissingInputException;
+import facades.HobbyFacade;
 import facades.PersonFacade;
 import java.sql.Date;
 import javax.persistence.EntityManager;
@@ -41,15 +42,17 @@ public class Test {
 //        personDTO.addID(125);
 //        Facade.addPerson(personDTO);
         
-        Person person2 = new Person(Date.valueOf("2020-10-10"), "Marcus", "LORT", "adasdadadasd@sdasdasd.cascas");
-        Phone phone2 = new Phone("42421111", "+45");
-        Address address2 = new Address("LORTegade 21",new CityInfo("8732"));
-
-        person2.addPhone(phone2);
-        person2.setAddress(address2);
-        PersonDTO personDTO2 = new PersonDTO(person2);
-        personDTO2.addID(5);
-        personDTO2.setId(15);
-        Facade.editPerson(personDTO2);
+//        Person person2 = new Person(Date.valueOf("2020-10-10"), "Marcus", "LORT", "adasdadadasd@sdasdasd.cascas");
+//        Phone phone2 = new Phone("42421111", "+45");
+//        Address address2 = new Address("LORTegade 21",new CityInfo("8732"));
+//
+//        person2.addPhone(phone2);
+//        person2.setAddress(address2);
+//        PersonDTO personDTO2 = new PersonDTO(person2);
+//        personDTO2.addID(5);
+//        personDTO2.setId(15);
+//        Facade.editPerson(personDTO2);
+        
+        System.out.println(HobbyFacade.getHobbyFacade(emf).allHobbies());
     }
 }
