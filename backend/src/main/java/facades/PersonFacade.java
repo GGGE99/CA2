@@ -5,8 +5,10 @@
  */
 package facades;
 
+import dto.HobbyDTO;
 import dto.PersonDTO;
 import dto.PersonsDTO;
+import dto.PhoneDTO;
 import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
@@ -70,47 +72,42 @@ public class PersonFacade {
             query.setParameter("zipcode", personDTO.getZipCode());
             CityInfo cityInfo = (CityInfo) query.getSingleResult();
             person2.setAddress(new Address(personDTO.getStreet(), cityInfo));
-            for (int i : personDTO.getHobbies()) {
-                person2.addHobby(em.find(Hobby.class, i));
+            for (HobbyDTO i : personDTO.getHobbies()) {
+                person2.addHobby(em.find(Hobby.class, i.getId()));
             }
-            for (Phone p : personDTO.getPhones()) {
-                person2.addPhone(p);
+            for (PhoneDTO p : personDTO.getPhones()) {
+                person2.addPhone(new Phone(p.getNumber(), p.getDescription()));
             }
 
             em.getTransaction().begin();
             em.persist(person2);
             em.getTransaction().commit();
-//
-//            em.getTransaction().begin();
-//
-//            em.getTransaction().commit();
         } finally {
             em.close();
         }
         return new PersonDTO(person2);
     }
 
-    public Hobby getHobby(int personID) {
-        EntityManager em = getEntityManager();
-        Hobby p = em.find(Hobby.class, personID);
-        return p;
-    }
-
-    public Person editPersonHobby(int personID, List<Integer> hobbies) throws MissingInputException {
+//    public Hobby getHobby(int personID) {
+//        EntityManager em = getEntityManager();
+//        Hobby p = em.find(Hobby.class, personID);
+//        return p;
+//    }
+    public Person editPersonHobby(int personID, List<HobbyDTO> hobbies) throws MissingInputException {
         EntityManager em = getEntityManager();
         Person p = em.find(Person.class, personID);
         em.getTransaction().begin();
         for (Hobby hobby : p.getHobbies()) {
             hobby.removePerson(p);
         }
-        for (int i : hobbies) {
-            p.addHobby(em.find(Hobby.class, i));
+        for (HobbyDTO i : hobbies) {
+            p.addHobby(em.find(Hobby.class, i.getId()));
         }
         em.getTransaction().commit();
         return p;
     }
 
-    public Person editPersonPhone(int personID, List<Phone> phones) {
+    public Person editPersonPhone(int personID, List<PhoneDTO> phones) {
         EntityManager em = getEntityManager();
         Person p = em.find(Person.class, personID);
         try {
@@ -126,12 +123,12 @@ public class PersonFacade {
         return p;
     }
 
-    public Person editPersonAddPhone(int personID, List<Phone> phones) {
+    public Person editPersonAddPhone(int personID, List<PhoneDTO> phones) {
         EntityManager em = getEntityManager();
         Person p = em.find(Person.class, personID);
         em.getTransaction().begin();
-        for (Phone phone : phones) {
-            p.addPhone(phone);
+        for (PhoneDTO phone : phones) {
+            p.addPhone(new Phone(phone.getNumber(), phone.getDescription()));
         }
         em.persist(p);
         em.getTransaction().commit();
@@ -182,15 +179,18 @@ public class PersonFacade {
         }
     }
 
-    public PersonDTO getPerson(long id) throws PersonNotFoundException {
+    public PersonDTO getPerson(int id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
 
         try {
             Person person = em.find(Person.class, id);
+
             if (person == null) {
                 throw new PersonNotFoundException(String.format("Person with id: (%d) not found.", id));
             } else {
-                return new PersonDTO(person);
+                PersonDTO personDTO = new PersonDTO(person);
+
+                return personDTO;
             }
         } finally {
             em.close();
@@ -200,7 +200,7 @@ public class PersonFacade {
     public PersonsDTO getAllPersons() {
         EntityManager em = getEntityManager();
         try {
-            System.out.println(em.createQuery("SELECT p FROM Person p"));
+            System.out.println(em.createQuery("SELECT p FROM Person p", Person.class).executeUpdate());
 //            return new PersonsDTO(em.createNamedQuery("Person.getAllRows").getResultList());
         } finally {
             em.close();

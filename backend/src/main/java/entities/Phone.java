@@ -66,10 +66,6 @@ public class Phone implements Serializable {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "Phone{" + "number=" + number + ", description=" + description + '}';
-    }
     
     
 }

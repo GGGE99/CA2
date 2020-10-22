@@ -64,8 +64,6 @@ public class Test {
 
         person2.setAddress(address2);
         PersonDTO personDTO2 = new PersonDTO(person2);
-        personDTO2.addID(7);
-        personDTO2.addID(13);
         Facade.editPerson(personDTO2);
 //
 //        List<Integer> hobbylist = new ArrayList();

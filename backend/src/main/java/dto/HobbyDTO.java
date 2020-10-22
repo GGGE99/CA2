@@ -12,7 +12,7 @@ import entities.Hobby;
  * @author madsa
  */
 public class HobbyDTO {
-
+    private int id;
     private String name;
     private String type;
     private String category;
@@ -22,12 +22,23 @@ public class HobbyDTO {
     }
 
     public HobbyDTO(Hobby h) {
+        this.id = h.getId();
         this.name = h.getName();
         this.wikiLink = h.getWikiLink();
         this.category = h.getCategory();
         this.type = h.getType();
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    
+    
     public String getName() {
         return name;
     }

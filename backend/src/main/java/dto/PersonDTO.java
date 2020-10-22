@@ -24,8 +24,8 @@ public class PersonDTO {
     private String street;
     private String zipCode;
     private String city;
-    private List<Integer> hobbiesID;
-    private List<Phone> phones;
+    private List<HobbyDTO> hobbies;
+    private List<PhoneDTO> phones;
 
 
     public PersonDTO() {
@@ -40,16 +40,17 @@ public class PersonDTO {
         this.street = p.getAddress().getStreet();
         this.zipCode = p.getAddress().getCityInfo().getZipCode();
         this.city = p.getAddress().getCityInfo().getCity();
-        this.phones = p.getPhones();
-        hobbiesID = new ArrayList();
+        this.phones = new ArrayList();
+        for (Phone phone : p.getPhones()) {
+            this.phones.add(new PhoneDTO(phone));
+        }
+        hobbies = new ArrayList();
         for (Hobby h : p.getHobbies()) {
-            this.hobbiesID.add(h.getId());
+            this.hobbies.add(new HobbyDTO(h));
         }
     }
     
-    public void addID(int id){
-        hobbiesID.add(id);
-    }
+
 
     public Integer getId() {
         return id;
@@ -91,14 +92,6 @@ public class PersonDTO {
         this.birthday = birthday;
     }
 
-    public List<Phone> getPhones() {
-        return phones;
-    }
-
-    public void setPhones(List<Phone> phones) {
-        this.phones = phones;
-    }
-
     public String getStreet() {
         return street;
     }
@@ -110,6 +103,15 @@ public class PersonDTO {
     public String getZipCode() {
         return zipCode;
     }
+
+    public List<PhoneDTO> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(List<PhoneDTO> phones) {
+        this.phones = phones;
+    }
+    
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
@@ -123,19 +125,17 @@ public class PersonDTO {
         this.city = city;
     }
 
-
-
-    public List<Integer> getHobbies() {
-        return hobbiesID;
+    public List<HobbyDTO> getHobbies() {
+        return hobbies;
     }
 
-    public void setHobbies(List<Integer> hobbies) {
-        this.hobbiesID = hobbies;
+    public void addHobby(HobbyDTO hobby) {
+        this.hobbies.add(hobby);
     }
-
+    
     @Override
     public String toString() {
-        return "PersonDTO{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", email=" + email + ", birthday=" + birthday + ", street=" + street + ", zipCode=" + zipCode + ", city=" + city + ", hobbies=" + hobbiesID + ", phones=" + phones + '}';
+        return "PersonDTO{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", email=" + email + ", birthday=" + birthday + ", street=" + street + ", zipCode=" + zipCode + ", city=" + city + ", hobbies=" + hobbies + ", phones=" + phones + '}';
     }
     
     
