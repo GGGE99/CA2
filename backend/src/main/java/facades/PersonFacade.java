@@ -72,8 +72,8 @@ public class PersonFacade {
             query.setParameter("zipcode", personDTO.getZipCode());
             CityInfo cityInfo = (CityInfo) query.getSingleResult();
             person2.setAddress(new Address(personDTO.getStreet(), cityInfo));
-            for (HobbyDTO i : personDTO.getHobbies()) {
-                person2.addHobby(em.find(Hobby.class, i.getId()));
+            for (int i : personDTO.getHobbiesID()) {
+                person2.addHobby(em.find(Hobby.class, i));
             }
             for (PhoneDTO p : personDTO.getPhones()) {
                 person2.addPhone(new Phone(p.getNumber(), p.getDescription()));
@@ -200,12 +200,10 @@ public class PersonFacade {
     public PersonsDTO getAllPersons() {
         EntityManager em = getEntityManager();
         try {
-            System.out.println(em.createQuery("SELECT p FROM Person p", Person.class).executeUpdate());
-//            return new PersonsDTO(em.createNamedQuery("Person.getAllRows").getResultList());
+            return new PersonsDTO(em.createQuery("SELECT p FROM Person p", Person.class).getResultList());
         } finally {
             em.close();
         }
-        return null;
     }
 
     /*

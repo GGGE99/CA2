@@ -25,14 +25,14 @@ public class PersonDTO {
     private String zipCode;
     private String city;
     private List<HobbyDTO> hobbies;
+    private List<Integer> hobbiesID;
     private List<PhoneDTO> phones;
-
 
     public PersonDTO() {
     }
 
     public PersonDTO(Person p) {
-        this.id = p.getId();    
+        this.id = p.getId();
         this.name = p.getName();
         this.gender = p.getGender();
         this.email = p.getEmail();
@@ -49,8 +49,10 @@ public class PersonDTO {
             this.hobbies.add(new HobbyDTO(h));
         }
     }
-    
 
+    public List<Integer> getHobbiesID() {
+        return hobbiesID;
+    }
 
     public Integer getId() {
         return id;
@@ -111,7 +113,6 @@ public class PersonDTO {
     public void setPhones(List<PhoneDTO> phones) {
         this.phones = phones;
     }
-    
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
@@ -132,12 +133,10 @@ public class PersonDTO {
     public void addHobby(HobbyDTO hobby) {
         this.hobbies.add(hobby);
     }
-    
+
     @Override
     public String toString() {
         return "PersonDTO{" + "id=" + id + ", name=" + name + ", gender=" + gender + ", email=" + email + ", birthday=" + birthday + ", street=" + street + ", zipCode=" + zipCode + ", city=" + city + ", hobbies=" + hobbies + ", phones=" + phones + '}';
     }
-    
-    
 
 }
