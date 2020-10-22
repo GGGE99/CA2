@@ -8,6 +8,8 @@ import entities.Person;
 import entities.Phone;
 import exceptions.MissingInputException;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -119,22 +121,15 @@ public class FacadeExampleTest {
 
     // TODO: Delete or change this method 
     @Test
-    public void testAddPerson() throws MissingInputException {
-//        Person p1 = new Person(Date.valueOf("2000-01-01"), "Peter Madsen", "Mand", "ubåd@mail.com");
-//        Phone ph1 = new Phone("12345678", "+45");
-////        Hobby hobby1 = new Hobby("Kunstskøjteløb", "null", "top", "udendørs");
-//        CityInfo c2 = new CityInfo("8000");
-//        Address a2 = new Address("Prebenvej", c2);
-//        p1.addPhone(ph1);
-//        p1.setAddress(a2);
-//        PersonDTO pdto = new PersonDTO(p1);
-//        pdto.addID(1);
-//        EntityManagerFactory _emf = null;
-//        PersonFacade instance = PersonFacade.getFacadeExample(_emf);
-//        PersonDTO result = instance.addPerson(pdto);
-//        PersonDTO expResult = new PersonDTO(p1);
-        assertEquals(true, true);
-        
-    }
-
+    public void testEditPerson() throws MissingInputException{
+        System.out.println("Test person redigering");
+        PersonDTO p = new PersonDTO(p1);
+        EntityManagerFactory _emf = null;
+        PersonFacade instance = PersonFacade.getFacadeExample(_emf);
+        PersonDTO expResult = new PersonDTO(p1);
+        expResult.setGender("female");
+        p.setGender("female");
+        PersonDTO result = instance.editPerson(p);
+        assertEquals(expResult.getGender(), result.getGender());
+    }   
 }
