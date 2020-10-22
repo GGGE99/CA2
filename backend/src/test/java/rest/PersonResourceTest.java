@@ -157,6 +157,7 @@ public class PersonResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("msg", equalTo("Hello World"));
     }
+    
     @Disabled
     @Test
     public void testGetAllPersons() throws Exception {
