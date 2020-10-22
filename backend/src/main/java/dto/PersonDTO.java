@@ -41,6 +41,7 @@ public class PersonDTO {
         this.zipCode = p.getAddress().getCityInfo().getZipCode();
         this.city = p.getAddress().getCityInfo().getCity();
         this.phones = new ArrayList();
+        this.hobbiesID = new ArrayList();
         for (Phone phone : p.getPhones()) {
             this.phones.add(new PhoneDTO(phone));
         }
@@ -132,6 +133,10 @@ public class PersonDTO {
 
     public void addHobby(HobbyDTO hobby) {
         this.hobbies.add(hobby);
+    }
+    
+    public void addHobbyID(int hobbyid) {
+        this.hobbiesID.add(hobbyid);
     }
 
     @Override
