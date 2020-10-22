@@ -27,6 +27,7 @@ public class ApplicationConfig extends Application {
         resources.add(rest.PersonResource.class);
         resources.add(rest.RenameMeResource.class);
         resources.add(rest.TestResource.class);
+        resources.add(utils.CorsFilter.class);
     }
     
 }
