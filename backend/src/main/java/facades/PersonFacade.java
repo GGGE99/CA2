@@ -88,11 +88,6 @@ public class PersonFacade {
         return new PersonDTO(person2);
     }
 
-//    public Hobby getHobby(int personID) {
-//        EntityManager em = getEntityManager();
-//        Hobby p = em.find(Hobby.class, personID);
-//        return p;
-//    }
     public Person editPersonHobby(int personID, List<HobbyDTO> hobbies) throws MissingInputException {
         EntityManager em = getEntityManager();
         Person p = em.find(Person.class, personID);
@@ -106,47 +101,71 @@ public class PersonFacade {
         em.getTransaction().commit();
         return p;
     }
-
-    public Person editPersonPhone(int personID, List<PhoneDTO> phones) {
-        EntityManager em = getEntityManager();
-        Person p = em.find(Person.class, personID);
-        try {
-            em.getTransaction().begin();
-            for (Phone phone : p.getPhones()) {
-                em.remove(em.find(Phone.class, phone.getNumber()));
-            }
-            em.getTransaction().commit();
-        } finally {
-            editPersonAddPhone(personID, phones);
-        }
-
-        return p;
-    }
-
-    public Person editPersonAddPhone(int personID, List<PhoneDTO> phones) {
-        EntityManager em = getEntityManager();
-        Person p = em.find(Person.class, personID);
-        em.getTransaction().begin();
-        for (PhoneDTO phone : phones) {
-            p.addPhone(new Phone(phone.getNumber(), phone.getDescription()));
-        }
-        em.persist(p);
-        em.getTransaction().commit();
-        return p;
-    }
+//
+//    public Person editPersonPhone(int personID, List<PhoneDTO> phones) {
+//        EntityManager em = getEntityManager();
+//        Person p = em.find(Person.class, personID);
+//        System.out.println("Hej xD: " + p);
+//        try {
+//            em.getTransaction().begin();
+//            for (Phone phone : p.getPhones()) {
+//                System.out.println(phone);
+//                em.remove(em.find(Phone.class, phone.getNumber()));
+//                p.removePhone(phone);
+//            }
+//            em.merge(p);
+//            em.getTransaction().commit();
+//            System.out.println("Hej xD: " + p);
+//        } finally {
+//            editPersonAddPhone(personID, phones);
+//        }
+//
+//        return p;
+//    }
+//
+//    public Person editPersonAddPhone(int personID, List<PhoneDTO> phones) {
+//        EntityManager em = getEntityManager();
+//        Person p = em.find(Person.class, personID);
+//        em.getTransaction().begin();
+//        for (PhoneDTO phone : phones) {
+//            p.addPhone(new Phone(phone.getNumber(), phone.getDescription()));
+//        }
+//        em.persist(p);
+//        em.getTransaction().commit();
+//        return p;
+//    }
 
     public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
         EntityManager em = getEntityManager();
         Person person = em.find(Person.class, personDTO.getId());
         try {
-            person = editPersonPhone(personDTO.getId(), personDTO.getPhones());
-            person = editPersonHobby(personDTO.getId(), personDTO.getHobbies());
+            em.getTransaction().begin();
+            for (Phone phone : person.getPhones()) {
+                Query query = em.createQuery("DELETE FROM Phone p where p.person.id = :id");
+                query.setParameter("id", phone.getPerson().getId()).executeUpdate();
+            }
+            em.getTransaction().commit();
+
+            em.getTransaction().begin();
+            person.setPhones(new ArrayList());
+            for (PhoneDTO phoneDTO : personDTO.getPhones()) {
+                System.out.println(phoneDTO);
+                person.addPhone(new Phone(phoneDTO.getNumber(), phoneDTO.getDescription()));
+            }
+
+
+            em.getTransaction().commit();
+
+            em.getTransaction().begin();
+//            getPhonesFromDTO(personDTO.getPhones(), person);
+//                    = editPersonPhone(personDTO.getId(), personDTO.getPhones());
+//            person = editPersonHobby(personDTO.getId(), personDTO.getHobbies());
             person.setName(personDTO.getName());
             person.setBirthday(personDTO.getBirthday());
             person.setEmail(personDTO.getEmail());
             person.setGender(personDTO.getGender());
             person.setAddress(new Address(personDTO.getStreet(), new CityInfo(personDTO.getZipCode())));
-            em.getTransaction().begin();
+
             em.merge(person);
             em.getTransaction().commit();
             return new PersonDTO(person);
@@ -171,8 +190,9 @@ public class PersonFacade {
             try {
                 em.getTransaction().begin();
                 for (Phone phone : person.getPhones()) {
-                em.remove(em.find(Phone.class, phone.getNumber()));
-            }
+                    em.remove(em.find(Phone.class, phone.getNumber()));
+                    person.removePhone(phone);
+                }
                 em.remove(person);
                 em.getTransaction().commit();
             } finally {
@@ -209,34 +229,4 @@ public class PersonFacade {
         }
     }
 
-    /*
-    public PersonDTO editPerson(PersonDTO p) throws PersonNotFoundException, MissingInputException {
-        if ((p.getfName().length() == 0) || (p.getlName().length() == 0)) {
-            throw new MissingInputException("First Name and/or Last Name is missing");
-        }
-        EntityManager em = getEntityManager();
-
-        try {
-            em.getTransaction().begin();
-
-            Person person = em.find(Person.class, p.getId());
-            if (person == null) {
-                throw new PersonNotFoundException(String.format("Person with id: (%d) not found", p.getId()));
-            } else {
-                person.setFirstName(p.getfName());
-                person.setLastName(p.getlName());
-                person.setPhone(p.getPhone());
-                person.setLastEdited();
-                person.getAddress().setStreet(p.getStreet());
-                person.getAddress().setZip(p.getZip());
-                person.getAddress().setCity(p.getCity());
-            }
-            em.getTransaction().commit();
-            return new PersonDTO(person);
-        } finally {
-            em.close();
-        }
-
-    }
-     */
 }

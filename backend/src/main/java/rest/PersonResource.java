@@ -20,6 +20,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,7 +33,7 @@ import utils.EMF_Creator;
  */
 @Path("person")
 public class PersonResource {
-    
+
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
 
     //An alternative way to get the EntityManagerFactory, whithout having to type the details all over the code
@@ -61,14 +62,26 @@ public class PersonResource {
         PersonDTO p = FACADE.getPerson(id);
         return GSON.toJson(p);
     }
-    
+
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    
     public String addPerson(String personDTO) throws MissingInputException {
         PersonDTO p = GSON.fromJson(personDTO, PersonDTO.class);
         PersonDTO pAdded = FACADE.addPerson(p);
         return GSON.toJson(pAdded);
+    }
+
+    @PUT
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Path("{id}")
+    public String editPerson(String person, @PathParam("id") Integer id) throws PersonNotFoundException, MissingInputException {
+        PersonDTO p = GSON.fromJson(person, PersonDTO.class);
+        p.setId(id);
+        
+        PersonDTO pEdited = FACADE.editPerson(p);
+
+        return GSON.toJson(pEdited);
     }
 }

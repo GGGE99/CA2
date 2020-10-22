@@ -5,6 +5,7 @@
  */
 package entities;
 
+import dto.PhoneDTO;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,7 +38,8 @@ public class Phone implements Serializable {
         this.number = number;
         this.description = description;
     }
-    
+
+
     public void addPerson(Person person) {
         this.person = person;
     }
@@ -49,7 +51,7 @@ public class Phone implements Serializable {
     public Person getPerson() {
         return person;
     }
-    
+
     public String getNumber() {
         return number;
     }
@@ -66,6 +68,4 @@ public class Phone implements Serializable {
         this.description = description;
     }
 
-    
-    
 }
