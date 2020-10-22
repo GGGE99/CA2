@@ -1,12 +1,11 @@
 import "./style.css"
 import "bootstrap/dist/css/bootstrap.css"
-import "./jokeFacade"
-import jokeFacade from "./jokeFacade"
+import personFacade from "./personFacade"
 
 /* 
   Add your JavaScript for all exercises Below or in separate js-files, which you must the import above
 */
-
+document.getElementById("error").style.display = "none"
 /* JS For Exercise-1 below */
 
 
@@ -15,6 +14,56 @@ import jokeFacade from "./jokeFacade"
 
 
 /* JS For Exercise-3 below */
+/*Her starter den function der laver en liste af alle personer*/
+document.getElementById("getAllBTN").addEventListener("click", makeListOfAllUsers);
+function makeListOfAllUsers() {
+  personFacade.getAllPersons()
+    .then(data => {
+      document.getElementById("error").style.display = "none"  /* søger for at fjerne error div'en når functionen bliver kaldt efter en fejl */
+      const persons = data.all;
+      const tableRows = personFacade.mapPerson(persons);
+      const tableRowsAsString = tableRows.join("");
+      document.getElementById("allUserRows").innerHTML = tableRowsAsString;
+    })
+    .catch(err => {
+      if (err.status) {
+        document.getElementById("error").style.display = "block"
+        err.fullError.then(e => {
+          document.getElementById("error").innerHTML = e.detail
+          console.log(e.detail)
+        })
+      }
+      else { console.log("Network error"); }
+    });
+}
+/*Her slutter den function der laver en liste af alle personer*/
+
+/*Her starter find person by id */
+document.getElementById("findByBTN").addEventListener("click", findByID);
+function findByID() {
+  let id = document.getElementById("findByID").value;
+  personFacade.getById(id)
+    .then(data => {
+      document.getElementById("error").style.display = "none" /* søger for at fjerne error div'en når functionen bliver kaldt efter en fejl */
+      const persons = [];
+      persons.push(data);
+      const tableRow = personFacade.mapPerson(persons);
+      const tableRowAsString = tableRow.join("");
+      document.getElementById("allUserRows").innerHTML = tableRowAsString;
+    })
+    .catch(err => {
+      if (err.status) {
+        document.getElementById("error").style.display = "block"
+        err.fullError.then(e => {
+          document.getElementById("error").innerHTML = e.detail
+          console.log(e.detail)
+        })
+      }
+      else { console.log("Network error"); }
+    });
+}
+/*Her slutter find person by id*/
+
 
 
 /* 

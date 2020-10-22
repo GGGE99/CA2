@@ -12,6 +12,7 @@ import entities.Hobby;
 import entities.Person;
 import entities.Phone;
 import exceptions.MissingInputException;
+import exceptions.PersonNotFoundException;
 import facades.HobbyFacade;
 import facades.PersonFacade;
 import java.sql.Date;
@@ -29,20 +30,20 @@ public class Test {
     private static EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
     private static PersonFacade Facade = PersonFacade.getFacadeExample(emf);
 
-    public static void main(String[] args) throws MissingInputException {
+    public static void main(String[] args) throws MissingInputException, PersonNotFoundException {
         EntityManager em = emf.createEntityManager();
 
-//        Person person1 = new Person(Date.valueOf("2020-10-10"), "HEJ", "LORT", "adasdadadasd@sdasdasd.cascas");
-//        Phone phone = new Phone("12345678", "+45");
-//        Address address = new Address("LORTegade 21",new CityInfo("8732"));
-//
-//        person1.addPhone(phone);
-//        person1.setAddress(address);
-//
-//
-//        PersonDTO personDTO = new PersonDTO(person1);
+        Person person1 = new Person(Date.valueOf("2020-10-10"), "HEJ", "LORT", "adasdadadasd@sdasdasd.cascas");
+        Phone phone = new Phone("12345699", "+45");
+        Address address = new Address("LORTegade 21",new CityInfo("8732"));
+
+        person1.addPhone(phone);
+        person1.setAddress(address);
+        person1.addHobby(em.find(Hobby.class, 1));
+
+        PersonDTO personDTO = new PersonDTO(person1);
 //        personDTO.addID(14);
-//        Facade.addPerson(personDTO);
+        Facade.addPerson(personDTO);
 //        Person person2 = new Person(Date.valueOf("2020-10-10"), "Marcus", "LORT", "marcus@sdasdasd.cascas");
 ////        Phone phone2 = );
 //        Address address2 = new Address("SkodVej 69",new CityInfo("8732"));
@@ -53,18 +54,18 @@ public class Test {
 //        personDTO2.addID(12);
 //        personDTO2.setId(7);
 //        Facade.editPerson(personDTO2);
-        Person person2 = new Person(7, Date.valueOf("2020-10-10"), "Marcus", "LORT", "adasdadadasd@sdasdasd.cascas");
-        Phone phone2 = new Phone("42421111", "+45");
-        Phone phone3 = new Phone("11112222", "+45");
-
-        Address address2 = new Address("Skodvej 21", new CityInfo("8732"));
+//        Person person2 = new Person(7, Date.valueOf("2020-10-10"), "Marcus", "LORT", "adasdadadasd@sdasdasd.cascas");
+//        Phone phone2 = new Phone("42421111", "+45");
+//        Phone phone3 = new Phone("11112222", "+45");
 //
-        person2.addPhone(phone2);
-        person2.addPhone(phone3);
-
-        person2.setAddress(address2);
-        PersonDTO personDTO2 = new PersonDTO(person2);
-        Facade.editPerson(personDTO2);
+//        Address address2 = new Address("Skodvej 21", new CityInfo("8732"));
+////
+//        person2.addPhone(phone2);
+//        person2.addPhone(phone3);
+//
+//        person2.setAddress(address2);
+//        PersonDTO personDTO2 = new PersonDTO(person2);
+//        Facade.editPerson(personDTO2);
 //
 //        List<Integer> hobbylist = new ArrayList();
 //        hobbylist.add(3);
@@ -79,6 +80,6 @@ public class Test {
 //        Facade.editPersonPhone(7, phoneList);
 //        Facade.editPersonAddPhone(7, phoneList);
         //System.out.println(HobbyFacade.getHobbyFacade(emf).allHobbies());
-        System.out.println(Facade.findPersonByPhone("11112222"));
+        //System.out.println(Facade.findPersonByPhone("11112222"));
     }
 }
