@@ -162,7 +162,7 @@ public class PersonFacade {
         return new PersonDTO(person);
     }
 
-    public PersonDTO deletePerson(long id) throws PersonNotFoundException {
+    public PersonDTO deletePerson(int id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
         Person person = em.find(Person.class, id);
         if (person == null) {
@@ -170,6 +170,9 @@ public class PersonFacade {
         } else {
             try {
                 em.getTransaction().begin();
+                for (Phone phone : person.getPhones()) {
+                em.remove(em.find(Phone.class, phone.getNumber()));
+            }
                 em.remove(person);
                 em.getTransaction().commit();
             } finally {
