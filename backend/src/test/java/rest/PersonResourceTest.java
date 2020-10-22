@@ -12,7 +12,8 @@ import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.parsing.Parser;
 import java.net.URI;
-import java.sql.Date;
+import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,6 +25,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,7 +34,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 //Uncomment the line below, to temporarily disable this test
 
-@Disabled
+
 public class PersonResourceTest {
 
     private static final int SERVER_PORT = 7777;
@@ -95,10 +97,13 @@ public class PersonResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-
-        p1 = new Person(Date.valueOf("2020-10-10"), "Poul Madsen", "Mand", "mail.mail.com");
-        p2 = new Person(Date.valueOf("2020-10-10"), "Torben", "Mand", "mail.mail.com");
-        p3 = new Person(Date.valueOf("2009-10-10"), "Preben", "Kvinde", "mail.mail.com");
+        Date d1 = new Date(2020,01,02);
+        Date d2 = new Date(2020,02,02);
+        Date d3 = new Date(2020,03,02);
+        
+        p1 = new Person(d1, "Poul Madsen", "Mand", "mail.mail.com");
+        p2 = new Person(d2, "Torben", "Mand", "mail.mail.com");
+        p3 = new Person(d3, "Preben", "Kvinde", "mail.mail.com");
         Phone ph1 = new Phone("12345678", "+45");
         Phone ph2 = new Phone("12345698", "+45");
         Phone ph3 = new Phone("12345612", "+45");
@@ -160,6 +165,7 @@ public class PersonResourceTest {
     }
     
     
+    
     @Test
     public void testGetAllPersons() throws Exception {
         List<PersonDTO> personsDTO;
@@ -169,12 +175,41 @@ public class PersonResourceTest {
                 .get("/person/all")
                 .then()
                 .extract().body().jsonPath().getList("all", PersonDTO.class);
-        
+
         PersonDTO p1DTO = new PersonDTO(p1);
-            PersonDTO p2DTO = new PersonDTO(p2);
-            PersonDTO p3DTO = new PersonDTO(p3);
-            
-            assertThat(personsDTO, containsInAnyOrder(p1DTO, p2DTO, p3DTO));
+        PersonDTO p2DTO = new PersonDTO(p2);
+        PersonDTO p3DTO = new PersonDTO(p3);
+        List<String> navne = new ArrayList<>();
+        for (PersonDTO personDTO : personsDTO) {
+            navne.add(personDTO.getName());
+        }
+        assertThat(navne, containsInAnyOrder(p1DTO.getName(), p2DTO.getName(), p3DTO.getName()));
+    }
+    
+    @Test
+    public void addPerson(){
+        java.util.Date date = new java.util.Date(2012,12,12);
+        
+        
+        Person per = new Person(date, "Peter Madsen", "Mand", "mail.mail.com");
+        Phone ph4 = new Phone("12223333", "5");
+        Address a4 = new Address("Flemmingvej 5", new CityInfo("8732"));
+        
+        per.addPhone(ph4);
+        per.setAddress(a4);   
+        
+        PersonDTO perDTO = new PersonDTO(per);
+        perDTO.addHobbyID(1);
+        given()
+                .contentType("application/json")
+                .body(perDTO)       
+                .when()
+                .post("person")
+                .then()
+                .body("name", equalTo("Peter Madsen"))
+                .body("gender", equalTo("Mand"))
+                .body("id", notNullValue());
+    }
 
     }
-}
+

@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Webpack/Babel-demo</title>
+  <title>CA2</title>
 </head>
 
 <body>
   <ul id="menu" class="header">
     <li><a href="" id="about">About</a></li>
-    <li><a href="" id="ex1">Ex1</a></li>
-    <li><a href="" id="ex2">Ex2</a></li>
-    <li><a href="" id="ex3">Ex3</a></li>
+    <!--<li><a href="" id="ex1">Ex1</a></li>-->
+    <li><a href="" id="ex2">find hobbies</a></li>
+    <li><a href="" id="ex3">find users</a></li>
   </ul>
 
   <div class="content">
@@ -27,60 +28,107 @@
 
 
 
-    <!-- This is were you should place your basic HTML for exercise-2 -->
+    <!-- This is were you should place your basic HTML for find hobby -->
     <div id="ex2_html" style="display:none;">
-      <h3>Exercise 2</h3>
-      <p>Add your basic HTML for Exercise 2 here</p>
-    </div>
-    <!-- End of HTML for exercise-1 -->
-
-
-    <!-- This is were you should place your basic HTML for exercise-3 -->
-    <div id="ex3_html" style="display:none;">
-      <h3>Ex-3</h3>
-      <p>Add your basic HTML for Exercise 3 here</p>
-
-      <div class="row" style="min-height: 5em;"">
+      <div class="col-md-4" style="background-color: powderblue;">
+        <h5>Find User</h5>
+        <input type="text" class="form-control" id="hobbyID" placeholder="Find by id">
+        <input type="text" class="form-control" id="hobbyType" placeholder="Search by type">
+        <input type="text" class="form-control" id="hobbyCategory" placeholder="Search by category">
+        <button type="submit" id="findHobbyBTN" class="btn btn-secondary">Find</button>
+      </div>
       <div class="col-md-8 pre-scrollable" style="background-color: lightgrey;">
-        <h5>All Users</h5>
+        <h5>Hobbies</h5>
         <table class="table">
           <thead>
             <tr>
               <th>Id</th>
-              <th>Age</th>
-              <th>Name
-              <th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Wikilink</th>
+          </thead>
+          <tbody id="allHobbyRows">
+          <tbody>
+        </table>
+      </div>
+    </div>
+    <!-- End of HTML for find hobby -->
+
+
+    <!-- This is were you should place your basic HTML for find person -->
+    <div id="error" class="alert alert-danger" role="alert" style="width: 50%;margin-top:10px;"></div>
+    <div id="ex3_html" style="display:none;">
+      <div class="row" style="min-height: 5em;">
+        <div class="col-md-4" style="background-color: powderblue;">
+          <h5>Find User</h5>
+          <input type="text" class="form-control" id="findByID" placeholder="Find by id">
+          <input type="text" class="form-control" id="findByPhone" placeholder="Find by phone">
+          <button type="submit" id="findByBTN" class="btn btn-secondary">Find</button>
+        </div>
+        <div class="col-md-4" style="background-color: powderblue;">
+          <h5>Delete User</h5>
+          <input type="text" class="form-control" id="deleteID" placeholder="Delete user with id">
+          <button type="submit" id="deleteBTN" class="btn btn-secondary">Delete user</button>
+        </div>
+      </div>
+      <div class="row" style="min-height: 5em;">
+        <div class="col-md-4" style="background-color: powderblue;">
+          <h5>Add User</h5>
+          <input type="text" class="form-control" id="userName" placeholder="Name">
+          <input type="text" class="form-control" id="gender" placeholder="Gender">
+          <input type="email" class="form-control" id="email" placeholder="Email">
+          <input type="date" class="form-control" id="birthday">
+          <input type="text" class="form-control" id="phoneNumber" placeholder="Phone number">
+          <input type="text" class="form-control" id="phoneDescription" placeholder="Phone description">
+          <input type="text" class="form-control" id="zipcode" placeholder="Zipcode">
+          <input type="text" class="form-control" id="street" placeholder="Street">
+          <input type="search" class="form-control" id="hobby" placeholder="Choose hobby via id">
+          <button type="submit" id="addUserBTN" class="btn btn-secondary">Add user</button>
+        </div>
+        <div class="col-md-4" style="background-color: lightgrey;">
+          <h5>Edit User</h5>
+          <input type="text" class="form-control" id="editUserName" placeholder="Name">
+          <input type="text" class="form-control" id="editGender" placeholder="Gender">
+          <input type="email" class="form-control" id="editEmail" placeholder="Email">
+          <input type="date" class="form-control" id="editBirthday">
+          <input type="text" class="form-control" id="editPhoneNumber" placeholder="Phone number">
+          <input type="text" class="form-control" id="editPhoneDescription" placeholder="Phone description">
+          <input type="text" class="form-control" id="editZipcode" placeholder="Zipcode">
+          <input type="text" class="form-control" id="editStreet" placeholder="Street">
+          <input type="search" class="form-control" id="editHobby" placeholder="Choose hobby via id">
+          <button type="submit" id="editUserBTN" class="btn btn-secondary">Edit user</button>
+        </div>
+      </div>
+      <div class="col-md-8 pre-scrollable" style="background-color: lightgrey;">
+        <h5>Users</h5> <button type="submit" id="getAllBTN" class="btn btn-secondary">Get all</button>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
               <th>Gender</th>
-              <th>Email </th>
+              <th>Email</th>
+              <th>Birthday</th>
+              <th>Street</th>
+              <th>Zipcode</th>
+              <th>City</th>
+              <th>Hobby</th>
+              <th>Phone number</th>
           </thead>
           <tbody id="allUserRows">
           <tbody>
         </table>
       </div>
-      <div class="col-md-4" style="background-color: powderblue;">
-        <h5>Find User</h5>
-      </div>
     </div>
-    <div class="row" style="min-height: 5em;">
-      <div class="col-md-4" style="background-color: powderblue;">
-        <h5>Add User</h5>
-      </div>
-      <div class="col-md-4" style="background-color: lightgrey;">
-        <h5>Edit User</h5>
-      </div>
-      <div class="col-md-4" style="background-color: powderblue;">
-        <h5>Delete User</h5>
-      </div>
-    </div>
-  </div>
-  <!-- End of HTML for exercise-3 -->
+    <!-- End of HTML for find person-->
 
-  <!---- HTML for the About page -->
-  <div id="about_html" style="display:none;">
-    <h3>About</h3>
-    <p>Watch the small video given as intro to this code, BEFORE you start using it</p>
-  </div>
-  <!-- End of HTML for ABOUT Page -->
+    <!---- HTML for the About page -->
+    <div id="about_html" style="display:none;">
+      <h3>About</h3>
+      <p>Watch the small video given as intro to this code, BEFORE you start using it</p>
+    </div>
+    <!-- End of HTML for ABOUT Page -->
 
   </div>
 
