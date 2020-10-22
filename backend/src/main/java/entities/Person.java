@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,6 +28,7 @@ import javax.persistence.TemporalType;
  * @author marcg
  */
 @Entity
+@NamedQuery(name = "Person.getAllRows", query = "SELECT p FROM Person p")
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;

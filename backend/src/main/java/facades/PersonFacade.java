@@ -163,17 +163,6 @@ public class PersonFacade {
         Phone p = em.find(Phone.class, number);
         Person person = p.getPerson();
         return new PersonDTO(person);
-
-//        Query query = em.createQuery("Select pers.name, pers.birthday, pers.email, pho.number, adr.street, cInf.city, cInf.zipCode, \n"
-//                + "hob.name, hob.category, hob.type, hob.wikiLink \n"
-//                + "from Person pers\n"
-//                + "join pers.phones pho\n"
-//                + "join pers.hobbies hob\n"
-//                + "join pers.address adr\n"
-//                + "join adr.cityInfo cInf\n"
-//                + "where pho.number = :number");
-//        query.setParameter("number", number);
-//        Person personDTO = query.getSingleResult();
     }
 
     public PersonDTO deletePerson(long id) throws PersonNotFoundException {
@@ -211,10 +200,12 @@ public class PersonFacade {
     public PersonsDTO getAllPersons() {
         EntityManager em = getEntityManager();
         try {
-            return new PersonsDTO(em.createNamedQuery("Person.getAllRows").getResultList());
+            System.out.println(em.createQuery("SELECT p FROM Person p"));
+//            return new PersonsDTO(em.createNamedQuery("Person.getAllRows").getResultList());
         } finally {
             em.close();
         }
+        return null;
     }
 
     /*
