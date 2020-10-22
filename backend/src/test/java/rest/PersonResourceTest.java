@@ -13,6 +13,7 @@ import static io.restassured.RestAssured.given;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import java.sql.Date;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
@@ -20,6 +21,8 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -38,8 +41,7 @@ public class PersonResourceTest {
     private static Person p1, p2, p3;
     private static PersonDTO pDTO, pDTO2, pDTO3;
     private static Hobby h1, h2, h3;
-    
-    
+
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
@@ -55,13 +57,12 @@ public class PersonResourceTest {
         EMF_Creator.startREST_TestWithDB();
         emf = EMF_Creator.createEntityManagerFactoryForTest();
         EntityManager em = emf.createEntityManager();
-        
+
         httpServer = startServer();
         //Setup RestAssured
         RestAssured.baseURI = SERVER_URL;
         RestAssured.port = SERVER_PORT;
         RestAssured.defaultParser = Parser.JSON;
-
 
         Hobby h1 = new Hobby("Kunstskøjteløb", "null", "top", "udendørs");
         Hobby h2 = new Hobby("badminton", "null", "top", "indendørs");
@@ -79,25 +80,23 @@ public class PersonResourceTest {
         em.persist(c3);
         em.getTransaction().commit();
     }
-    
+
     @AfterAll
-    public static void closeTestServer(){
+    public static void closeTestServer() {
         //System.in.read();
-         //Don't forget this, if you called its counterpart in @BeforeAll
-         EMF_Creator.endREST_TestWithDB();
-         httpServer.shutdownNow();
+        //Don't forget this, if you called its counterpart in @BeforeAll
+        EMF_Creator.endREST_TestWithDB();
+        httpServer.shutdownNow();
     }
-    
+
     // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
     //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        
-        
 
         p1 = new Person(Date.valueOf("2020-10-10"), "Poul Madsen", "Mand", "mail.mail.com");
-        p2 = new Person(Date.valueOf("1997-01-01"), "Torben", "Mand", "mail.mail.com");
+        p2 = new Person(Date.valueOf("2020-10-10"), "Torben", "Mand", "mail.mail.com");
         p3 = new Person(Date.valueOf("2009-10-10"), "Preben", "Kvinde", "mail.mail.com");
         Phone ph1 = new Phone("12345678", "+45");
         Phone ph2 = new Phone("12345698", "+45");
@@ -130,42 +129,50 @@ public class PersonResourceTest {
         }
 
     }
-    
+
     @AfterEach
     public void tearDown() {
-         EntityManager em = emf.createEntityManager();
+        EntityManager em = emf.createEntityManager();
 
-            em.getTransaction().begin();
-                em.createQuery("Delete from Phone").executeUpdate();
-                em.createQuery("Delete from Person").executeUpdate();
-                em.createQuery("Delete from Address").executeUpdate();               
-            em.getTransaction().commit();
+        em.getTransaction().begin();
+        em.createQuery("Delete from Phone").executeUpdate();
+        em.createQuery("Delete from Person").executeUpdate();
+        em.createQuery("Delete from Address").executeUpdate();
+        em.getTransaction().commit();
     }
-    
+
     @Test
     public void testServerIsUp() {
         System.out.println("Testing is server UP");
         given().when().get("/person").then().statusCode(200);
     }
-   
+
     //This test assumes the database contains two rows
     @Test
     public void testDummyMsg() throws Exception {
         given()
-        .contentType("application/json")
-        .get("/person/").then()
-        .assertThat()
-        .statusCode(HttpStatus.OK_200.getStatusCode())
-        .body("msg", equalTo("Hello World"));   
+                .contentType("application/json")
+                .get("/person/").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("msg", equalTo("Hello World"));
     }
-    
+    @Disabled
     @Test
     public void testGetAllPersons() throws Exception {
-        given()
-        .contentType("application/json")
-        .get("/person/all").then()
-        .assertThat()
-        .statusCode(HttpStatus.OK_200.getStatusCode())
-        .body("count", equalTo(2));   
+        List<PersonDTO> personsDTO;
+        personsDTO = given()
+                .contentType("application/json")
+                .when()
+                .get("/person/all")
+                .then()
+                .extract().body().jsonPath().getList("all", PersonDTO.class);
+        
+        PersonDTO p1DTO = new PersonDTO(p1);
+            PersonDTO p2DTO = new PersonDTO(p2);
+            PersonDTO p3DTO = new PersonDTO(p3);
+            
+            assertThat(personsDTO, containsInAnyOrder(p1DTO, p2DTO, p3DTO));
+
     }
 }

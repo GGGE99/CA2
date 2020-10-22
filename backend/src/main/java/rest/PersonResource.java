@@ -32,7 +32,7 @@ import utils.EMF_Creator;
  */
 @Path("person")
 public class PersonResource {
-
+    
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
 
     //An alternative way to get the EntityManagerFactory, whithout having to type the details all over the code
@@ -65,6 +65,7 @@ public class PersonResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
+    
     public String addPerson(String personDTO) throws MissingInputException {
         PersonDTO p = GSON.fromJson(personDTO, PersonDTO.class);
         PersonDTO pAdded = FACADE.addPerson(p);
