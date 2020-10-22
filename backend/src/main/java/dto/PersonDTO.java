@@ -32,7 +32,7 @@ public class PersonDTO {
     }
 
     public PersonDTO(Person p) {
-        this.id = p.getId();
+        if(p.getId() != null)this.id = p.getId();
         this.name = p.getName();
         this.gender = p.getGender();
         this.email = p.getEmail();

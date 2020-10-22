@@ -11,12 +11,15 @@ import dto.PersonDTO;
 import dto.PersonsDTO;
 
 import entities.Person;
+import exceptions.MissingInputException;
 import exceptions.PersonNotFoundException;
 import facades.FacadeExample;
 import facades.PersonFacade;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -57,5 +60,16 @@ public class PersonResource {
     public String getPersonById(@PathParam("id") int id) throws PersonNotFoundException {
         PersonDTO p = FACADE.getPerson(id);
         return GSON.toJson(p);
+    }
+    
+    @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    public String addPerson(String personDTO) throws MissingInputException {
+        System.out.println(personDTO);
+        PersonDTO p = GSON.fromJson(personDTO, PersonDTO.class);
+        System.out.println(p);
+        PersonDTO pAdded = FACADE.addPerson(p);
+        return GSON.toJson(pAdded);
     }
 }
