@@ -64,6 +64,53 @@ function findByID() {
 }
 /*Her slutter find person by id*/
 
+/*Her starter post person */
+
+function add() {
+
+  let name = document.getElementById("userName").value;
+  let gender = document.getElementById("gender").value;
+  let email = document.getElementById("email").value;
+  let birthday = document.getElementById("birthday").value;
+  let number = document.getElementById("phoneNumber").value;
+  let phoneDescription = document.getElementById("phoneDescription").value;
+  let phones = { "number": number, "description": phoneDescription };
+  let zipCode = document.getElementById("zipcode").value;
+  let street = document.getElementById("street").value;
+  let city = document.getElementById("city").value;
+  let hobby = document.getElementById("hobby").value;
+  let hobbiesID = [hobby];
+
+  let newPerson = {
+    name,
+    gender,
+    email,
+    birthday,
+    phones,
+    zipCode,
+    street,
+    city,
+    hobbiesID
+  }
+
+  personFacade.addPerson(newPerson)
+    .then(makeListOfAllUsers, document.getElementById("error").style.display = "none")
+    .catch(err => {
+      if (err.status) {
+        document.getElementById("error").style.display = "block"
+        err.fullError.then(e => {
+          document.getElementById("error").innerHTML = e.detail
+          console.log(e.detail)
+        })
+      }
+      else { console.log("Network error"); }
+    });
+}
+document.getElementById("addUserBTN").addEventListener("click", add)
+
+
+/*Her slutter post person */
+
 
 
 /* 

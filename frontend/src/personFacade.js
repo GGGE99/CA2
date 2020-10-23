@@ -1,4 +1,5 @@
-
+const URL = 'http://localhost:8080/jpareststarter/api/person/'
+const SERVER_URL = "https://marcge.dk/hobbies/api/person/"
 function handleHttpErrors(res) {
     if (!res.ok) {
         return Promise.reject({ status: res.status, fullError: res.json() })
@@ -37,15 +38,19 @@ function mapPerson(persons){
     `)
 }
 
-const URL = 'http://localhost:8080/jpareststarter/api/person/'
-
 function getAllPersons() {
-    return fetch(URL + "all")
+    return fetch(SERVER_URL + "all")
         .then(handleHttpErrors)
 }
 
 function getById(id) {
-    return fetch(URL + id)
+    return fetch(SERVER_URL + id)
+        .then(handleHttpErrors)
+}
+
+function addPerson(person) {
+    const options = makeOptions("POST", person)
+    return fetch(SERVER_URL, options)
         .then(handleHttpErrors)
 }
 
@@ -53,6 +58,7 @@ const personFacade = {
     getAllPersons,
     getById,
     mapPerson,
+    addPerson,
 }
 
 export default personFacade;
