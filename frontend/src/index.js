@@ -72,15 +72,29 @@ function add() {
   let email = document.getElementById("email").value;
   let birthday = document.getElementById("birthday").value;
   let number = document.getElementById("phoneNumber").value;
-  let phoneDescription = document.getElementById("phoneDescription").value;
-  let phones = [{ "number": number, "description": phoneDescription }];
+
   let zipCode = document.getElementById("zipcode").value;
   let street = document.getElementById("street").value;
   // let city = document.getElementById("city").value;
   let hobby = document.getElementById("hobby").value;
   let hobbiesID = hobby.trim().split(",");
 
-  console.log(document.getElementById("birthday"))
+  let phones = [];
+  let phone = {}
+  document.getElementById("addPhoneDiv").childNodes.forEach(element => {
+    if (!(element.nodeType === 3)) {
+      if (element.className.includes("phoneNumber")) {
+        phone.number = element.value
+      }
+      else if (element.className.includes("phoneDescription")) {
+        phone.description = element.value
+        let tempPhone = { ...phone }
+        phones.push(tempPhone)
+      }
+    }
+
+  });
+
 
   let newPerson = {
     name,
@@ -94,20 +108,71 @@ function add() {
     hobbiesID,
   }
 
-  personFacade.addPerson(newPerson)
-    .then(makeListOfAllUsers, document.getElementById("error").style.display = "none")
-    .catch(err => {
-      if (err.status) {
-        document.getElementById("error").style.display = "block"
-        err.fullError.then(e => {
-          document.getElementById("error").innerHTML = e.detail
-          console.log(e.detail)
-        })
-      }
-      else { console.log("Network error"); }
-    });
+  // personFacade.addPerson(newPerson)
+  //   .then(makeListOfAllUsers, document.getElementById("error").style.display = "none")
+  //   .catch(err => {
+  //     if (err.status) {
+  //       document.getElementById("error").style.display = "block"
+  //       err.fullError.then(e => {
+  //         document.getElementById("error").innerHTML = e.detail
+  //         console.log(e.detail)
+  //       })
+  //     }
+  //     else { console.log("Network error"); }
+  //   });
 }
 document.getElementById("addUserBTN").addEventListener("click", add)
+
+let phoneCount = 1
+
+function showAndHideButton() {
+  if (phoneCount === 1) {
+    document.getElementById("removePhone").style.display = "none"
+  } else {
+    document.getElementById("removePhone").style.display = "block"
+  }
+}
+
+function addPhoneInput(num) {
+  phoneCount += num
+  let div = document.getElementById("addPhoneDiv")
+  let inputNumber = document.createElement("input")
+  inputNumber.setAttribute("type", "text")
+  inputNumber.setAttribute("class", "form-control phoneNumber")
+  inputNumber.setAttribute("placeholder", "Phone number")
+
+  let inputDescription = document.createElement("input")
+  inputDescription.setAttribute("type", "text")
+  inputDescription.setAttribute("class", "form-control phoneDescription")
+  inputDescription.setAttribute("placeholder", "Phone description")
+
+  div.appendChild(inputNumber);
+  div.appendChild(inputDescription);
+
+  showAndHideButton()
+}
+
+function removePhoneInput(num) {
+  phoneCount += num
+  let div = document.getElementById("addPhoneDiv")
+  if (phoneCount > 0) {
+    div.removeChild(div.lastChild)
+    div.removeChild(div.lastChild)
+  }
+  showAndHideButton()
+}
+
+document.getElementById("addPhone").addEventListener("click", (evt) => {
+  addPhoneInput(1)
+})
+document.getElementById("removePhone").addEventListener("click", (evt) => {
+  removePhoneInput(-1)
+})
+
+
+addPhoneInput(0)
+
+
 
 
 /*Her slutter post person */
@@ -129,24 +194,24 @@ document.getElementById("findUserToEditBTN").addEventListener("click", (evt) => 
     document.getElementById("editZipcode").value = data.zipCode
     document.getElementById("editStreet").value = data.street
     let hobbies = "";
-    
+
     data.hobbies.forEach(element => {
       hobbies += element.id + ","
-      
+
     });
-    hobbies = hobbies.substring(0,hobbies.length - 1)
-    
+    hobbies = hobbies.substring(0, hobbies.length - 1)
+
     document.getElementById("editHobby").value = hobbies
 
   })
 });
 
 document.getElementById("editUserBTN").addEventListener("click", (evt) => {
-  let name = document.getElementById("editUserName").value 
+  let name = document.getElementById("editUserName").value
   let gender = document.getElementById("editGender").value
   let email = document.getElementById("editEmail").value
-  let birthday = document.getElementById("editBirthday").value 
-  let phones = [{ "number": document.getElementById("editPhoneNumber").value , "description": document.getElementById("editPhoneDescription").value }];
+  let birthday = document.getElementById("editBirthday").value
+  let phones = [{ "number": document.getElementById("editPhoneNumber").value, "description": document.getElementById("editPhoneDescription").value }];
   let zipCode = document.getElementById("editZipcode").value
   let street = document.getElementById("editStreet").value
   let hobby = document.getElementById("editHobby").value
