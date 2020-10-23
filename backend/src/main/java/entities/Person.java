@@ -59,7 +59,8 @@ public class Person implements Serializable {
         this.phones = new ArrayList();
         this.hobbies = new ArrayList();
     }
-     public Person(
+
+    public Person(
             Date birthday,
             String name,
             String gender,
@@ -110,12 +111,19 @@ public class Person implements Serializable {
     public void removePhone(Phone phone) {
         phone.setPerson(null);
         this.hobbies.remove(phone);
-
+    }
+    
+    public void deleteHobbies(){
+        for (Hobby hobby : this.hobbies) {
+            hobby.removePerson(this);
+        }
+        this.hobbies = new ArrayList();
+        
     }
 
     public void removeHobby(Hobby hobby) {
-        hobby.removePerson(this);
         this.hobbies.remove(hobby);
+        hobby.removePerson(this);
     }
 
     public void addHobby(Hobby hobby) {

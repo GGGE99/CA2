@@ -174,31 +174,18 @@ public class PersonFacade {
         }
     }
 
-    public void removeHobbyFromPersonAndAddNew(Person person, List<Integer> hobbies) {
-        EntityManager em = getEntityManager();
-        em.getTransaction().begin();
-
-        for (Hobby hobby : person.getHobbies()) {
-            hobby.removePerson(person);
-        }
-        for (int i : hobbies) {
-            person.addHobby(em.find(Hobby.class, i));
-        }
-        em.getTransaction().commit();
-
-    }
 
     public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
         EntityManager em = getEntityManager();
         Person person = em.find(Person.class, personDTO.getId());
         try {
+
+            person.deleteHobbies();
+
             List<Integer> idList = new ArrayList();
-            for (Hobby hobby : person.getHobbies()) {
-                idList.add(hobby.getId());
+            for (int id : personDTO.getHobbiesID()) {
+                person.addHobby(em.find(Hobby.class, id));
             }
-
-            removeHobbyFromPersonAndAddNew(person, personDTO.getHobbiesID());
-
             for (Integer integer : idList) {
                 if (!personDTO.getHobbiesID().contains(integer)) {
                 }
