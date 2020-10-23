@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-XXXX="Name or your frontend project, for example movie --> folder you created under /var/www"
-DROPLET_URL="URL for your droplet"
+XXXX="hobby"
+DROPLET_URL="marcge.dk"
 
 echo "##############################"
 echo "Building the frontend project"

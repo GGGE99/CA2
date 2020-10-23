@@ -1,5 +1,5 @@
 const URL = 'http://localhost:8080/jpareststarter/api/person/'
-const SERVER_URL = "https://marcge.dk/hobbies/api/person/"
+const SERVER_URL = "https://marcge.dk/tomcat/hobbies/api/person/"
 function handleHttpErrors(res) {
     if (!res.ok) {
         return Promise.reject({ status: res.status, fullError: res.json() })

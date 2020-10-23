@@ -67,19 +67,18 @@ function findByID() {
 /*Her starter post person */
 
 function add() {
-
   let name = document.getElementById("userName").value;
   let gender = document.getElementById("gender").value;
   let email = document.getElementById("email").value;
   let birthday = document.getElementById("birthday").value;
   let number = document.getElementById("phoneNumber").value;
   let phoneDescription = document.getElementById("phoneDescription").value;
-  let phones = { "number": number, "description": phoneDescription };
+  let phones = [{ "number": number, "description": phoneDescription }];
   let zipCode = document.getElementById("zipcode").value;
   let street = document.getElementById("street").value;
-  let city = document.getElementById("city").value;
+  // let city = document.getElementById("city").value;
   let hobby = document.getElementById("hobby").value;
-  let hobbiesID = [hobby];
+  let hobbiesID = hobby.trim().split(",");
 
   let newPerson = {
     name,
@@ -89,8 +88,8 @@ function add() {
     phones,
     zipCode,
     street,
-    city,
-    hobbiesID
+    // city,
+    hobbiesID,
   }
 
   personFacade.addPerson(newPerson)
