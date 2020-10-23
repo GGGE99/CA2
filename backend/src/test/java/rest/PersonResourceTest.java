@@ -10,6 +10,7 @@ import facades.PersonFacade;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
+import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import java.util.Date;
@@ -187,7 +188,7 @@ public class PersonResourceTest {
     }
     
     @Test
-    public void addPerson(){
+    public void TestAddPerson(){
         java.util.Date date = new java.util.Date(2012,12,12);
         
         
@@ -209,6 +210,22 @@ public class PersonResourceTest {
                 .body("name", equalTo("Peter Madsen"))
                 .body("gender", equalTo("Mand"))
                 .body("id", notNullValue());
+    }
+    
+    @Test
+    public void testEditPerson(){
+        PersonDTO peterParker = new PersonDTO(p1);
+        peterParker.setGender("spider");
+        given()
+                .contentType(ContentType.JSON)
+                .body(peterParker)
+                .when()
+                .put("person/" + peterParker.getId())
+                .then()
+                .body("name", equalTo(peterParker.getName()))
+                .body("gender", equalTo(peterParker.getGender()))
+                .body("id", equalTo(peterParker.getId()));
+        
     }
 
     }
