@@ -54,11 +54,18 @@ function addPerson(person) {
         .then(handleHttpErrors)
 }
 
+function editPerson(person, id) {
+    const options = makeOptions("PUT", person)
+    return fetch(SERVER_URL + id , options)
+        .then(handleHttpErrors)
+}
+
 const personFacade = {
     getAllPersons,
     getById,
     mapPerson,
     addPerson,
+    editPerson,
 }
 
 export default personFacade;
