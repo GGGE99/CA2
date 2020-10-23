@@ -71,7 +71,7 @@ function add() {
   let gender = document.getElementById("gender").value;
   let email = document.getElementById("email").value;
   let birthday = document.getElementById("birthday").value;
-  let number = document.getElementById("phoneNumber").value;
+  // let number = document.getElementById("phoneNumber").value;
 
   let zipCode = document.getElementById("zipcode").value;
   let street = document.getElementById("street").value;
@@ -94,7 +94,6 @@ function add() {
     }
 
   });
-
 
   let newPerson = {
     name,
@@ -123,22 +122,23 @@ function add() {
 }
 document.getElementById("addUserBTN").addEventListener("click", add)
 
-let phoneCount = 1
+let addPhoneCount = 0
+let editPhoneCount = 0
 
-function showAndHideButton() {
-  if (phoneCount === 1) {
+
+function showAndHideButton(Counter) {
+  if (Counter === 1) {
     document.getElementById("removePhone").style.display = "none"
   } else {
     document.getElementById("removePhone").style.display = "block"
   }
 }
 
-function addPhoneInput(num) {
-  phoneCount += num
-  let div = document.getElementById("addPhoneDiv")
+function addPhoneInput(addCount, divToEdit, method, Counter) {
+  let div = document.getElementById(divToEdit)
   let inputNumber = document.createElement("input")
   inputNumber.setAttribute("type", "text")
-  inputNumber.setAttribute("class", "form-control phoneNumber")
+  inputNumber.setAttribute("class", "form-control " + method + "phoneNumber")
   inputNumber.setAttribute("placeholder", "Phone number")
 
   let inputDescription = document.createElement("input")
@@ -148,33 +148,42 @@ function addPhoneInput(num) {
 
   div.appendChild(inputNumber);
   div.appendChild(inputDescription);
+  showAndHideButton(addPhoneCount)
 
-  showAndHideButton()
 }
 
-function removePhoneInput(num) {
-  phoneCount += num
-  let div = document.getElementById("addPhoneDiv")
-  if (phoneCount > 0) {
+function removePhoneInput(sub, divToEdit, Counter) {
+  let div = document.getElementById(divToEdit)
+  if (Counter > 0) {
     div.removeChild(div.lastChild)
     div.removeChild(div.lastChild)
   }
-  showAndHideButton()
+  showAndHideButton(addPhoneCount)
+
+}
+function addPhoneCountAdd() {
+  addPhoneCount += 1
+}
+
+function subPhoneCountAdd() {
+  addPhoneCount -= 1
+}
+
+function addPhoneCountEdit() {
+  editPhoneCount += 1
+}
+
+function subPhoneCountEdit() {
+  editPhoneCount -= 1
 }
 
 document.getElementById("addPhone").addEventListener("click", (evt) => {
-  addPhoneInput(1)
+  addPhoneInput(addPhoneCountAdd(), "addPhoneDiv", "add", addPhoneCount)
+
 })
 document.getElementById("removePhone").addEventListener("click", (evt) => {
-  removePhoneInput(-1)
+  removePhoneInput(subPhoneCountAdd(), "addPhoneDiv", addPhoneCount)
 })
-
-
-addPhoneInput(0)
-
-
-
-
 /*Her slutter post person */
 
 /*Her starter edit person */
@@ -211,7 +220,20 @@ document.getElementById("editUserBTN").addEventListener("click", (evt) => {
   let gender = document.getElementById("editGender").value
   let email = document.getElementById("editEmail").value
   let birthday = document.getElementById("editBirthday").value
-  let phones = [{ "number": document.getElementById("editPhoneNumber").value, "description": document.getElementById("editPhoneDescription").value }];
+  let phones = [];
+  let phone = {}
+  document.getElementById("editPhoneDiv").childNodes.forEach(element => {
+    if (!(element.nodeType === 3)) {
+      if (element.className.includes("phoneNumber")) {
+        phone.number = element.value
+      }
+      else if (element.className.includes("phoneDescription")) {
+        phone.description = element.value
+        let tempPhone = { ...phone }
+        phones.push(tempPhone)
+      }
+    }
+  });
   let zipCode = document.getElementById("editZipcode").value
   let street = document.getElementById("editStreet").value
   let hobby = document.getElementById("editHobby").value
@@ -244,6 +266,17 @@ document.getElementById("editUserBTN").addEventListener("click", (evt) => {
     });
 })
 
+document.getElementById("addPhoneEdit").addEventListener("click", (evt) => {
+  addPhoneInput(addPhoneCountEdit(), "editPhoneDiv", "edit", editPhoneCount)
+
+})
+document.getElementById("removePhoneEdit").addEventListener("click", (evt) => {
+  removePhoneInput(subPhoneCountEdit(), "editPhoneDiv", editPhoneCount)
+})
+
+
+addPhoneInput(addPhoneCountAdd(), "addPhoneDiv", "add", addPhoneCount)
+addPhoneInput(addPhoneCountEdit(), "editPhoneDiv", "edit", editPhoneCount)
 
 /*Her slutter edit person */
 
