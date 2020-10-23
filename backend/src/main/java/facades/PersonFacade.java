@@ -135,37 +135,96 @@ public class PersonFacade {
 //        return p;
 //    }
 
+    public void deletePhone(String number) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Query query = em.createQuery("DELETE FROM Phone p where p.number = :number");
+            query.setParameter("number", number).executeUpdate();
+
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void addPhone(Person person, Phone phone) {
+        EntityManager em = getEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            person.addPhone(phone);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+            return;
+        }
+
+    }
+
+    public List<String> getAllPhoneNumberFromPerson(int personID) {
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createQuery("SELECT p.number FROM Phone p where p.person.id = :personID");
+            query.setParameter("personID", personID);
+            List<String> phoneList = (List<String>) query.getResultList();
+            return phoneList;
+        } finally {
+            em.close();
+        }
+    }
+
+    public void removeHobbyFromPersonAndAddNew(Person person, List<Integer> hobbies) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+
+        for (Hobby hobby : person.getHobbies()) {
+            hobby.removePerson(person);
+        }
+        for (int i : hobbies) {
+            person.addHobby(em.find(Hobby.class, i));
+        }
+        em.getTransaction().commit();
+
+    }
+
     public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
         EntityManager em = getEntityManager();
         Person person = em.find(Person.class, personDTO.getId());
         try {
-            em.getTransaction().begin();
-            for (Phone phone : person.getPhones()) {
-                Query query = em.createQuery("DELETE FROM Phone p where p.person.id = :id");
-                query.setParameter("id", phone.getPerson().getId()).executeUpdate();
+            List<Integer> idList = new ArrayList();
+            for (Hobby hobby : person.getHobbies()) {
+                idList.add(hobby.getId());
             }
-            em.getTransaction().commit();
 
-            em.getTransaction().begin();
+            removeHobbyFromPersonAndAddNew(person, personDTO.getHobbiesID());
+
+            for (Integer integer : idList) {
+                if (!personDTO.getHobbiesID().contains(integer)) {
+                }
+            }
+
+            List<String> phones = getAllPhoneNumberFromPerson(person.getId());
+            List<String> numbers = new ArrayList();
+            for (PhoneDTO phone : personDTO.getPhones()) {
+                numbers.add(phone.getNumber());
+            }
+            for (String phone : phones) {
+                if (!numbers.contains(phone)) {
+                    deletePhone(phone);
+                }
+            }
             person.setPhones(new ArrayList());
             for (PhoneDTO phoneDTO : personDTO.getPhones()) {
-                System.out.println(phoneDTO);
-                person.addPhone(new Phone(phoneDTO.getNumber(), phoneDTO.getDescription()));
+                Phone phone = new Phone(phoneDTO.getNumber(), phoneDTO.getDescription());
+                addPhone(person, phone);
             }
-
-
-            em.getTransaction().commit();
-
             em.getTransaction().begin();
-//            getPhonesFromDTO(personDTO.getPhones(), person);
-//                    = editPersonPhone(personDTO.getId(), personDTO.getPhones());
-//            person = editPersonHobby(personDTO.getId(), personDTO.getHobbies());
             person.setName(personDTO.getName());
             person.setBirthday(personDTO.getBirthday());
             person.setEmail(personDTO.getEmail());
             person.setGender(personDTO.getGender());
             person.setAddress(new Address(personDTO.getStreet(), new CityInfo(personDTO.getZipCode())));
-
             em.merge(person);
             em.getTransaction().commit();
             return new PersonDTO(person);

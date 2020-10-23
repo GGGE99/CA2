@@ -39,6 +39,11 @@ public class Phone implements Serializable {
         this.description = description;
     }
 
+    public Phone(String number, String description, Person person) {
+        this.number = number;
+        this.description = description;
+        this.person = person;
+    }
 
     public void addPerson(Person person) {
         this.person = person;
