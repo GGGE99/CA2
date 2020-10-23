@@ -80,6 +80,8 @@ function add() {
   let hobby = document.getElementById("hobby").value;
   let hobbiesID = hobby.trim().split(",");
 
+  console.log(document.getElementById("birthday"))
+
   let newPerson = {
     name,
     gender,
