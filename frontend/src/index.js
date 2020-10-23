@@ -112,7 +112,75 @@ document.getElementById("addUserBTN").addEventListener("click", add)
 
 /*Her slutter post person */
 
+/*Her starter edit person */
+document.getElementById("findUserToEditBTN").addEventListener("click", (evt) => {
+  let ID = document.getElementById("personID").value;
+  personFacade.getById(ID).then(data => {
+    document.getElementById("editUserName").value = data.name
+    document.getElementById("editGender").value = data.gender
+    document.getElementById("editEmail").value = data.email
+    document.getElementById("editBirthday").value = data.birthday
+    data.phones.forEach(element => {
+      document.getElementById("editPhoneNumber").value = element.number
+    });
+    data.phones.forEach(element => {
+      document.getElementById("editPhoneDescription").value = element.description
+    });
+    document.getElementById("editZipcode").value = data.zipCode
+    document.getElementById("editStreet").value = data.street
+    let hobbies = "";
+    
+    data.hobbies.forEach(element => {
+      hobbies += element.id + ","
+      
+    });
+    hobbies = hobbies.substring(0,hobbies.length - 1)
+    
+    document.getElementById("editHobby").value = hobbies
 
+  })
+});
+
+document.getElementById("editUserBTN").addEventListener("click", (evt) => {
+  let name = document.getElementById("editUserName").value 
+  let gender = document.getElementById("editGender").value
+  let email = document.getElementById("editEmail").value
+  let birthday = document.getElementById("editBirthday").value 
+  let phones = [{ "number": document.getElementById("editPhoneNumber").value , "description": document.getElementById("editPhoneDescription").value }];
+  let zipCode = document.getElementById("editZipcode").value
+  let street = document.getElementById("editStreet").value
+  let hobby = document.getElementById("editHobby").value
+  let hobbiesID = hobby.trim().split(",");
+
+
+  let editedPerson = {
+    name,
+    gender,
+    email,
+    birthday,
+    phones,
+    zipCode,
+    street,
+    hobbiesID,
+  }
+  console.log(editedPerson)
+
+  personFacade.editPerson(editedPerson, document.getElementById("personID").value)
+    .then(makeListOfAllUsers, document.getElementById("error").style.display = "none")
+    .catch(err => {
+      if (err.status) {
+        document.getElementById("error").style.display = "block"
+        err.fullError.then(e => {
+          document.getElementById("error").innerHTML = e.detail
+          console.log(e.detail)
+        })
+      }
+      else { console.log("Network error"); }
+    });
+})
+
+
+/*Her slutter edit person */
 
 /* 
 Do NOT focus on the code below, UNLESS you want to use this code for something different than
