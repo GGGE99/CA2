@@ -11,6 +11,7 @@ import dto.PersonDTO;
 import dto.PersonsDTO;
 
 import entities.Person;
+import exceptions.InvalidInputException;
 import exceptions.MissingInputException;
 import exceptions.PersonNotFoundException;
 import facades.FacadeExample;
@@ -66,7 +67,7 @@ public class PersonResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String addPerson(String personDTO) throws MissingInputException {
+    public String addPerson(String personDTO) throws MissingInputException, InvalidInputException, PersonNotFoundException {
         PersonDTO p = GSON.fromJson(personDTO, PersonDTO.class);
         PersonDTO pAdded = FACADE.addPerson(p);
         return GSON.toJson(pAdded);
@@ -76,7 +77,7 @@ public class PersonResource {
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     @Path("{id}")
-    public String editPerson(String person, @PathParam("id") Integer id) throws PersonNotFoundException, MissingInputException {
+    public String editPerson(String person, @PathParam("id") Integer id) throws PersonNotFoundException, MissingInputException, InvalidInputException {
         PersonDTO p = GSON.fromJson(person, PersonDTO.class);
         p.setId(id);
         

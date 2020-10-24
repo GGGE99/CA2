@@ -14,6 +14,7 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
+import exceptions.InvalidInputException;
 import exceptions.MissingInputException;
 import exceptions.PersonNotFoundException;
 import java.util.ArrayList;
@@ -64,28 +65,69 @@ public class PersonFacade {
         }
     }
 
-    public PersonDTO addPerson(PersonDTO personDTO) throws MissingInputException {
+    public Address getPersonAddress(String street, String zipCode) {
         EntityManager em = getEntityManager();
-        Person person2 = new Person(personDTO);
+        Address address = null;
         try {
-            Query query = em.createQuery("SELECT c FROM CityInfo c WHERE c.zipCode = :zipcode");
-            query.setParameter("zipcode", personDTO.getZipCode());
-            CityInfo cityInfo = (CityInfo) query.getSingleResult();
-            person2.setAddress(new Address(personDTO.getStreet(), cityInfo));
+            Query query = em.createQuery("SELECT a FROM Address a where a.street = :street");
+            query.setParameter("street", street);
+            address = (Address) query.getSingleResult();
+
+        } catch (Exception e) {
+        }
+
+        if (address == null) {
+            Query query2 = em.createQuery("SELECT c FROM CityInfo c WHERE c.zipCode = :zipcode");
+            query2.setParameter("zipcode", zipCode);
+            CityInfo cityInfo = (CityInfo) query2.getSingleResult();
+            address = new Address(street, cityInfo);
+            em.getTransaction().begin();
+            em.persist(address);
+            em.getTransaction().commit();
+            return address;
+        } else {
+            return address;
+        }
+    }
+
+    public Phone getPhoneBuNumber(String number) {
+        EntityManager em = getEntityManager();
+        Phone phone = null;
+        try {
+            Query query = em.createQuery("SELECT p FROM Phone p where p.number = :number");
+            query.setParameter("number", number);
+            phone = (Phone) query.getSingleResult();
+            return phone;
+        } catch (Exception e) {
+//            System.out.println(e);
+        }
+        return phone;
+    }
+
+    public PersonDTO addPerson(PersonDTO personDTO) throws InvalidInputException, PersonNotFoundException {
+        EntityManager em = getEntityManager();
+        Person person = new Person(personDTO);
+
+        try {
+            person.setAddress(getPersonAddress(personDTO.getStreet(), personDTO.getZipCode()));
             for (int i : personDTO.getHobbiesID()) {
-                person2.addHobby(em.find(Hobby.class, i));
+                person.addHobby(em.find(Hobby.class, i));
             }
             for (PhoneDTO p : personDTO.getPhones()) {
-                person2.addPhone(new Phone(p.getNumber(), p.getDescription()));
+                if (getPhoneBuNumber(p.getNumber()) == null) {
+                    person.addPhone(new Phone(p.getNumber(), p.getDescription()));
+                } else {
+                    throw new InvalidInputException(String.format("Phone number: (%s) is taken", p.getNumber()));
+                }
             }
 
             em.getTransaction().begin();
-            em.persist(person2);
+            em.persist(person);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
-        return new PersonDTO(person2);
+        return new PersonDTO(person);
     }
 
     public Person editPersonHobby(int personID, List<HobbyDTO> hobbies) throws MissingInputException {
@@ -101,39 +143,6 @@ public class PersonFacade {
         em.getTransaction().commit();
         return p;
     }
-//
-//    public Person editPersonPhone(int personID, List<PhoneDTO> phones) {
-//        EntityManager em = getEntityManager();
-//        Person p = em.find(Person.class, personID);
-//        System.out.println("Hej xD: " + p);
-//        try {
-//            em.getTransaction().begin();
-//            for (Phone phone : p.getPhones()) {
-//                System.out.println(phone);
-//                em.remove(em.find(Phone.class, phone.getNumber()));
-//                p.removePhone(phone);
-//            }
-//            em.merge(p);
-//            em.getTransaction().commit();
-//            System.out.println("Hej xD: " + p);
-//        } finally {
-//            editPersonAddPhone(personID, phones);
-//        }
-//
-//        return p;
-//    }
-//
-//    public Person editPersonAddPhone(int personID, List<PhoneDTO> phones) {
-//        EntityManager em = getEntityManager();
-//        Person p = em.find(Person.class, personID);
-//        em.getTransaction().begin();
-//        for (PhoneDTO phone : phones) {
-//            p.addPhone(new Phone(phone.getNumber(), phone.getDescription()));
-//        }
-//        em.persist(p);
-//        em.getTransaction().commit();
-//        return p;
-//    }
 
     public void deletePhone(String number) {
         EntityManager em = getEntityManager();
@@ -174,10 +183,10 @@ public class PersonFacade {
         }
     }
 
-
-    public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException {
+    public PersonDTO editPerson(PersonDTO personDTO) throws MissingInputException, InvalidInputException {
         EntityManager em = getEntityManager();
         Person person = em.find(Person.class, personDTO.getId());
+
         try {
 
             person.deleteHobbies();
@@ -203,17 +212,28 @@ public class PersonFacade {
             }
             person.setPhones(new ArrayList());
             for (PhoneDTO phoneDTO : personDTO.getPhones()) {
-                Phone phone = new Phone(phoneDTO.getNumber(), phoneDTO.getDescription());
-                addPhone(person, phone);
+                System.out.println(phoneDTO.getNumber());
+                if (getPhoneBuNumber(phoneDTO.getNumber()) == null) {
+                    person.addPhone(new Phone(phoneDTO.getNumber(), phoneDTO.getDescription()));
+                    Phone phone = new Phone(phoneDTO.getNumber(), phoneDTO.getDescription());
+                    addPhone(person, phone);
+                } else {
+                    throw new InvalidInputException(String.format("Phone number: (%s) is taken", phoneDTO.getNumber()));
+                }
             }
-            em.getTransaction().begin();
+
+            person.setAddress(getPersonAddress(personDTO.getStreet(), personDTO.getZipCode()));
+
             person.setName(personDTO.getName());
             person.setBirthday(personDTO.getBirthday());
             person.setEmail(personDTO.getEmail());
             person.setGender(personDTO.getGender());
-            person.setAddress(new Address(personDTO.getStreet(), new CityInfo(personDTO.getZipCode())));
+
+            em.getTransaction().begin();
             em.merge(person);
             em.getTransaction().commit();
+
+            System.out.println(person);
             return new PersonDTO(person);
         } finally {
             em.close();
@@ -222,21 +242,24 @@ public class PersonFacade {
 
     public PersonDTO findPersonByPhone(String number) {
         EntityManager em = getEntityManager();
-        Phone p = em.find(Phone.class, number);
+        Phone p = em.find(Phone.class,
+                number);
         Person person = p.getPerson();
         return new PersonDTO(person);
     }
 
     public PersonDTO deletePerson(int id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
-        Person person = em.find(Person.class, id);
+        Person person = em.find(Person.class,
+                id);
         if (person == null) {
             throw new PersonNotFoundException(String.format("Person with id: (%d) not found", id));
         } else {
             try {
                 em.getTransaction().begin();
                 for (Phone phone : person.getPhones()) {
-                    em.remove(em.find(Phone.class, phone.getNumber()));
+                    em.remove(em.find(Phone.class,
+                            phone.getNumber()));
                     person.removePhone(phone);
                 }
                 em.remove(person);
@@ -252,7 +275,8 @@ public class PersonFacade {
         EntityManager em = getEntityManager();
 
         try {
-            Person person = em.find(Person.class, id);
+            Person person = em.find(Person.class,
+                    id);
 
             if (person == null) {
                 throw new PersonNotFoundException(String.format("Person with id: (%d) not found.", id));
@@ -269,7 +293,8 @@ public class PersonFacade {
     public PersonsDTO getAllPersons() {
         EntityManager em = getEntityManager();
         try {
-            return new PersonsDTO(em.createQuery("SELECT p FROM Person p", Person.class).getResultList());
+            return new PersonsDTO(em.createQuery("SELECT p FROM Person p", Person.class
+            ).getResultList());
         } finally {
             em.close();
         }

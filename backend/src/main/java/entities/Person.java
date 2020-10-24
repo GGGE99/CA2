@@ -40,7 +40,7 @@ public class Person implements Serializable {
     private String name;
     private String gender;
     private String email;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private Address address;
     @OneToMany(mappedBy = "person", cascade = CascadeType.PERSIST)
     private List<Phone> phones;
