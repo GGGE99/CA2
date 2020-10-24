@@ -18,7 +18,6 @@ import exceptions.InvalidInputException;
 import exceptions.MissingInputException;
 import exceptions.PersonNotFoundException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -297,6 +296,41 @@ public class PersonFacade {
             ).getResultList());
         } finally {
             em.close();
+        }
+    }
+    
+    public PersonsDTO getPersonsByZipcode(String zipcode) throws InvalidInputException {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p WHERE p.address.cityInfo.zipCode = :zipcode", Person.class);
+            query.setParameter("zipcode", zipcode);
+            List<Person> persons = query.getResultList();
+            PersonsDTO personsDTO = new PersonsDTO(persons);
+            if (personsDTO.getAll().isEmpty()) {
+                throw new InvalidInputException(String.format("zipcoden: (%s) har ingen personer tilkyntet", zipcode));
+            }
+            return personsDTO;
+
+        } catch (Exception e) {
+            throw new InvalidInputException(String.format("zipcoden: (%s) er ikke en gyldig zipcode", zipcode));
+        }
+    }
+    
+    public PersonsDTO getPersonsByHobbyId(int id) throws InvalidInputException {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p WHERE :hobby MEMBER OF p.hobbies", Person.class);
+            
+            query.setParameter("hobby", em.find(Hobby.class, id));
+            List<Person> persons = query.getResultList();
+            PersonsDTO personsDTO = new PersonsDTO(persons);
+            if (personsDTO.getAll().isEmpty()) {
+                throw new InvalidInputException(String.format("Hobby: (%d) har ingen personer tilkyntet", id));
+            }
+            return personsDTO;
+
+        } catch (Exception e) {
+            throw new InvalidInputException(String.format("Hobby: (%s) findes ikke", id));
         }
     }
 

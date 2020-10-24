@@ -7,6 +7,7 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
+import exceptions.InvalidInputException;
 import exceptions.MissingInputException;
 import exceptions.PersonNotFoundException;
 import java.sql.Date;
@@ -119,7 +120,7 @@ public class PersonFacadeTest {
 
     // TODO: Delete or change this method 
     @Test
-    public void testEditPerson() throws MissingInputException{
+    public void testEditPerson() throws MissingInputException, InvalidInputException{
         System.out.println("Test person redigering");
         PersonDTO p = new PersonDTO(p1);
         
@@ -179,7 +180,7 @@ public class PersonFacadeTest {
     }
     
     @Test
-    public void testAddPerson() throws MissingInputException{
+    public void testAddPerson() throws MissingInputException, InvalidInputException, PersonNotFoundException{
         PersonFacade instance = PersonFacade.getFacadeExample(emf);
         EntityManager em = emf.createEntityManager();
         

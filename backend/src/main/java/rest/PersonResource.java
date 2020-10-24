@@ -64,6 +64,22 @@ public class PersonResource {
         return GSON.toJson(p);
     }
 
+    @Path("zipcode/{zipcode}")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getPersonByzipcode(@PathParam("zipcode") String zipcode) throws InvalidInputException {
+        PersonsDTO p = FACADE.getPersonsByZipcode(zipcode);
+        return GSON.toJson(p);
+    }
+
+    @Path("hobby/{id}")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getPersonByzipcode(@PathParam("id") int id) throws InvalidInputException {
+        PersonsDTO p = FACADE.getPersonsByHobbyId(id);
+        return GSON.toJson(p);
+    }
+
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
@@ -80,7 +96,7 @@ public class PersonResource {
     public String editPerson(String person, @PathParam("id") Integer id) throws PersonNotFoundException, MissingInputException, InvalidInputException {
         PersonDTO p = GSON.fromJson(person, PersonDTO.class);
         p.setId(id);
-        
+
         PersonDTO pEdited = FACADE.editPerson(p);
 
         return GSON.toJson(pEdited);
