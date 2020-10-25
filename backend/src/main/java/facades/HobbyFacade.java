@@ -5,8 +5,10 @@
  */
 package facades;
 
+import dto.HobbiesDTO;
 import dto.HobbyDTO;
 import entities.Hobby;
+import exceptions.InvalidInputException;
 import exceptions.PersonNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +47,18 @@ public class HobbyFacade {
         return emf.createEntityManager();
     }
 
-    public long getHobbyCount() {
+    public long countPersonWithHobbyID(int id) throws InvalidInputException {
         EntityManager em = getEntityManager();
         try {
-            long hobbyCount = (long) em.createQuery("SELECT COUNT(r) FROM Hobby r").getSingleResult();
-            return hobbyCount;
+            Query query = em.createQuery("SELECT COUNT(p) FROM Person p WHERE :hobby MEMBER OF p.hobbies");
+            Hobby hobby = em.find(Hobby.class, id);
+            if (hobby == null) {
+                throw new InvalidInputException(String.format("Hobby: (%d) findes ikke", id));
+            } else {
+                query.setParameter("hobby", hobby);
+                long hobbyCount = (long) query.getSingleResult();
+                return hobbyCount;
+            }
         } finally {
             em.close();
         }
@@ -70,14 +79,14 @@ public class HobbyFacade {
         }
     }
 
-    public List<HobbyDTO> allHobbies() {
+    public HobbiesDTO allHobbies() {
         EntityManager em = getEntityManager();
-        List<HobbyDTO> listHobbies = new ArrayList<>();
+//        List<HobbyDTO> listHobbies = new ArrayList<>();
 
         try {
             Query query = em.createQuery("SELECT h FROM Hobby h");
-            listHobbies = query.getResultList();
-            return listHobbies;
+            List<Hobby> listHobbies = query.getResultList();
+            return new HobbiesDTO(listHobbies);
 
         } catch (Exception e) {
             //catch fejl her
@@ -85,9 +94,7 @@ public class HobbyFacade {
 
             em.close();
         }
-
-        return listHobbies;
+        return null;
     }
-    
-    
+
 }
