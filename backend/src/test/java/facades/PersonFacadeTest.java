@@ -44,7 +44,6 @@ public class PersonFacadeTest {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
         EntityManager em = emf.createEntityManager();
 
-
         Hobby h1 = new Hobby("Kunstskøjteløb", "null", "top", "udendørs");
         Hobby h2 = new Hobby("badminton", "null", "top", "indendørs");
         Hobby h3 = new Hobby("skining", "null", "top", "indendørs");
@@ -83,6 +82,13 @@ public class PersonFacadeTest {
         Address a1 = new Address("Flemmingvej", new CityInfo("8732"));
         Address a2 = new Address("Prebenvej", new CityInfo("8000"));
         Address a3 = new Address("Torstenvej", new CityInfo("2800"));
+
+        em.getTransaction().begin();
+        em.persist(a1);
+        em.persist(a2);
+        em.persist(a3);
+        em.getTransaction().commit();
+
         p1.addPhone(ph1);
         p2.addPhone(ph2);
         p3.addPhone(ph3);
@@ -109,94 +115,94 @@ public class PersonFacadeTest {
 
     @AfterEach
     public void tearDown() {
-         EntityManager em = emf.createEntityManager();
+        EntityManager em = emf.createEntityManager();
 
-            em.getTransaction().begin();
-                em.createQuery("Delete from Phone").executeUpdate();
-                em.createQuery("Delete from Person").executeUpdate();
-                em.createQuery("Delete from Address").executeUpdate();               
-            em.getTransaction().commit();
+        em.getTransaction().begin();
+        em.createQuery("Delete from Phone").executeUpdate();
+        em.createQuery("Delete from Person").executeUpdate();
+        em.createQuery("Delete from Address").executeUpdate();
+        em.getTransaction().commit();
     }
 
     // TODO: Delete or change this method 
     @Test
-    public void testEditPerson() throws MissingInputException, InvalidInputException{
+    public void testEditPerson() throws MissingInputException, InvalidInputException {
         System.out.println("Test person redigering");
         PersonDTO p = new PersonDTO(p1);
-        
+
         PersonFacade instance = PersonFacade.getFacadeExample(emf);
         PersonDTO expResult = new PersonDTO(p1);
         expResult.setGender("female");
         p.setGender("female");
         PersonDTO result = instance.editPerson(p);
         assertEquals(expResult.getGender(), result.getGender());
-    }   
-    
+    }
+
     @Test
     public void testFindPersonByPhone() {
         System.out.println(" KRAK ");
         PersonDTO expResult = new PersonDTO(p1);
-        
+
         PersonFacade instance = PersonFacade.getFacadeExample(emf);
         PersonDTO result = new PersonDTO();
         result = instance.findPersonByPhone("12345678");
         assertEquals(expResult.getName(), result.getName());
-  
+
     }
-    
+
     @Test
-    public void testGetPerson() throws PersonNotFoundException{
+    public void testGetPerson() throws PersonNotFoundException {
         System.out.println("Test get person");
         PersonDTO expResult = new PersonDTO(p1);
-        
+
         PersonFacade instance = PersonFacade.getFacadeExample(emf);
         PersonDTO result = new PersonDTO();
         result = instance.getPerson(p1.getId());
         assertEquals(expResult.getName(), result.getName());
     }
-    
+
     @Test
-    public void testGetAllPersons(){
+    public void testGetAllPersons() {
         System.out.println("Test get all persons");
         List<Person> personer = new ArrayList<>();
         personer.add(p1);
         personer.add(p2);
         personer.add(p3);
         PersonsDTO expResult = new PersonsDTO(personer);
-        
+
         PersonFacade instance = PersonFacade.getFacadeExample(emf);
         PersonsDTO result = new PersonsDTO();
         result = instance.getAllPersons();
         assertEquals(expResult.getAll().size(), result.getAll().size());
     }
-    
+
     @Test
-    public void testDeletePerson() throws PersonNotFoundException{
+    public void testDeletePerson() throws PersonNotFoundException {
         PersonFacade instance = PersonFacade.getFacadeExample(emf);
         int expResult = 2;
         instance.deletePerson(p1.getId());
         PersonsDTO result = instance.getAllPersons();
         assertEquals(expResult, result.getAll().size());
     }
-    
+
     @Test
-    public void testAddPerson() throws MissingInputException, InvalidInputException, PersonNotFoundException{
+    public void testAddPerson() throws MissingInputException, InvalidInputException, PersonNotFoundException {
         PersonFacade instance = PersonFacade.getFacadeExample(emf);
         EntityManager em = emf.createEntityManager();
-        
+
         int expResult = 4;
         Person per = new Person(Date.valueOf("2020-10-10"), "Peter Madsen", "Mand", "mail.mail.com");
         Phone ph4 = new Phone("12223333", "5");
         Address a4 = new Address("Flemmingvej 5", new CityInfo("8732"));
-        
+
         per.addPhone(ph4);
-        per.setAddress(a4);   
-        
+        per.setAddress(a4);
+
         PersonDTO perDTO = new PersonDTO(per);
         perDTO.addHobbyID(1);
         instance.addPerson(perDTO);
         PersonsDTO result = instance.getAllPersons();
         assertEquals(expResult, result.getAll().size());
     }
-    
+
 }

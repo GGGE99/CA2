@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 //Uncomment the line below, to temporarily disable this test
 
-
 public class PersonResourceTest {
 
     private static final int SERVER_PORT = 7777;
@@ -98,10 +97,10 @@ public class PersonResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        Date d1 = new Date(2020,01,02);
-        Date d2 = new Date(2020,02,02);
-        Date d3 = new Date(2020,03,02);
-        
+        Date d1 = new Date(2020, 01, 02);
+        Date d2 = new Date(2020, 02, 02);
+        Date d3 = new Date(2020, 03, 02);
+
         p1 = new Person(d1, "Poul Madsen", "Mand", "mail.mail.com");
         p2 = new Person(d2, "Torben", "Mand", "mail.mail.com");
         p3 = new Person(d3, "Preben", "Kvinde", "mail.mail.com");
@@ -112,6 +111,13 @@ public class PersonResourceTest {
         Address a1 = new Address("Flemmingvej", new CityInfo("8732"));
         Address a2 = new Address("Prebenvej", new CityInfo("8000"));
         Address a3 = new Address("Torstenvej", new CityInfo("2800"));
+
+        em.getTransaction().begin();
+        em.persist(a1);
+        em.persist(a2);
+        em.persist(a3);
+        em.getTransaction().commit();
+
         p1.addPhone(ph1);
         p2.addPhone(ph2);
         p3.addPhone(ph3);
@@ -130,7 +136,6 @@ public class PersonResourceTest {
             em.persist(p2);
             em.persist(p3);
             em.getTransaction().commit();
-
         } finally {
             em.close();
         }
@@ -164,9 +169,7 @@ public class PersonResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("msg", equalTo("Hello World"));
     }
-    
-    
-    
+
     @Test
     public void testGetAllPersons() throws Exception {
         List<PersonDTO> personsDTO;
@@ -186,24 +189,23 @@ public class PersonResourceTest {
         }
         assertThat(navne, containsInAnyOrder(p1DTO.getName(), p2DTO.getName(), p3DTO.getName()));
     }
-    
+
     @Test
-    public void TestAddPerson(){
-        java.util.Date date = new java.util.Date(2012,12,12);
-        
-        
+    public void TestAddPerson() {
+        java.util.Date date = new java.util.Date(2012, 12, 12);
+
         Person per = new Person(date, "Peter Madsen", "Mand", "mail.mail.com");
         Phone ph4 = new Phone("12223333", "5");
         Address a4 = new Address("Flemmingvej 5", new CityInfo("8732"));
-        
+
         per.addPhone(ph4);
-        per.setAddress(a4);   
-        
+        per.setAddress(a4);
+
         PersonDTO perDTO = new PersonDTO(per);
         perDTO.addHobbyID(1);
         given()
                 .contentType("application/json")
-                .body(perDTO)       
+                .body(perDTO)
                 .when()
                 .post("person")
                 .then()
@@ -211,22 +213,21 @@ public class PersonResourceTest {
                 .body("gender", equalTo("Mand"))
                 .body("id", notNullValue());
     }
-    
+    @Disabled
     @Test
-    public void testEditPerson(){
+    public void testEditPerson() {
         PersonDTO peterParker = new PersonDTO(p1);
         peterParker.setGender("spider");
         given()
-                .contentType(ContentType.JSON)
+                .contentType("application/json")
                 .body(peterParker)
                 .when()
-                .put("person/" + peterParker.getId())
+                .put("/person/" + peterParker.getId())
                 .then()
                 .body("name", equalTo(peterParker.getName()))
                 .body("gender", equalTo(peterParker.getGender()))
                 .body("id", equalTo(peterParker.getId()));
-        
-    }
 
     }
 
+}
