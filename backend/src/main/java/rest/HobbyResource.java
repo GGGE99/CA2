@@ -8,8 +8,10 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.HobbiesDTO;
+import dto.HobbyDTO;
 import dto.PersonDTO;
 import dto.PersonsDTO;
+import entities.Hobby;
 import exceptions.InvalidInputException;
 import exceptions.MissingInputException;
 import exceptions.PersonNotFoundException;
@@ -60,6 +62,14 @@ public class HobbyResource {
     public String getAllPersons(@PathParam("id") int id) throws InvalidInputException {
         long count = FACADE.countPersonWithHobbyID(id);
         return GSON.toJson(count);
+    }
+
+    @Path("{id}")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getHobbyById(@PathParam("id") int id) throws PersonNotFoundException {
+        HobbyDTO hobby  = FACADE.getHobby(id);
+        return GSON.toJson(hobby);
     }
 
 }

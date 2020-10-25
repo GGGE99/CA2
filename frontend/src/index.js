@@ -12,7 +12,32 @@ document.getElementById("error").style.display = "none"
 
 /* JS For Exercise-2 below */
 
+document.getElementById("findHobbyBTN").addEventListener("click", (evt) => {
+  let id = document.getElementById("hobbyID").value
+  findHobbyByID(id)
+})
 
+function findHobbyByID(id){
+  personFacade.getHobbyById(id)
+    .then(data => {
+      console.log(data)
+      document.getElementById("error").style.display = "none"  /* søger for at fjerne error div'en når functionen bliver kaldt efter en fejl */
+      const tableRows = `<tr><td>${data.id}</td><td>${data.name}</td><td>${data.wikiLink}</td><td>${data.category}</td><td>${data.type}</td></tr>`
+      console.log(tableRows)
+      document.getElementById("allHobbyRows").innerHTML = tableRows;
+    })
+    .catch(err => {
+      if (err.status) {
+        document.getElementById("error").style.display = "block"
+        err.fullError.then(e => {
+          document.getElementById("error").innerHTML = e.detail
+          console.log(e.detail)
+        })
+      }
+      else { console.log("Network error"); }
+    });
+
+}
 
 /* JS For Exercise-3 below */
 /*Her starter den function der laver en liste af alle personer*/

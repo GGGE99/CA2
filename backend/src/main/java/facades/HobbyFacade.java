@@ -64,11 +64,11 @@ public class HobbyFacade {
         }
     }
 
-    public Hobby getHobby(int id) throws PersonNotFoundException {
+    public HobbyDTO getHobby(int id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
 
         try {
-            Hobby hobby = em.find(Hobby.class, id);
+            HobbyDTO hobby = new HobbyDTO(em.find(Hobby.class, id));
             if (hobby == null) {
                 throw new PersonNotFoundException(String.format("Hobby with id: (%d) not found.", id));
             } else {

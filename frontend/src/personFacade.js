@@ -43,6 +43,13 @@ function getAllPersons() {
         .then(handleHttpErrors)
 }
 
+function getHobbyById(id) {
+    // https://marcge.dk/tomcat/hobbies/api/
+    
+    return fetch("http://localhost:8080/jpareststarter/api/hobby/"+id)
+        .then(handleHttpErrors)
+}
+
 function getById(id) {
     return fetch(SERVER_URL + id)
         .then(handleHttpErrors)
@@ -72,6 +79,7 @@ const personFacade = {
     addPerson,
     editPerson,
     getByhobbyId,
+    getHobbyById
 }
 
 export default personFacade;
