@@ -43,14 +43,16 @@ function makeListOfAllUsers() {
 document.getElementById("findByBTN").addEventListener("click", findByID);
 function findByID() {
   let id = document.getElementById("findByID").value;
-  personFacade.getById(id)
+  let hobbyId = document.getElementById("findByHobby").value;
+if(id === ""){
+  personFacade.getByhobbyId(hobbyId)
     .then(data => {
-      document.getElementById("error").style.display = "none" /* søger for at fjerne error div'en når functionen bliver kaldt efter en fejl */
-      const persons = [];
-      persons.push(data);
-      const tableRow = personFacade.mapPerson(persons);
-      const tableRowAsString = tableRow.join("");
-      document.getElementById("allUserRows").innerHTML = tableRowAsString;
+      console.log(data)
+      document.getElementById("error").style.display = "none"  /* søger for at fjerne error div'en når functionen bliver kaldt efter en fejl */
+      const persons = data.all;
+      const tableRows = personFacade.mapPerson(persons);
+      const tableRowsAsString = tableRows.join("");
+      document.getElementById("allUserRows").innerHTML = tableRowsAsString;
     })
     .catch(err => {
       if (err.status) {
@@ -62,6 +64,27 @@ function findByID() {
       }
       else { console.log("Network error"); }
     });
+} else {
+  personFacade.getById(id)
+  .then(data => {
+    document.getElementById("error").style.display = "none" /* søger for at fjerne error div'en når functionen bliver kaldt efter en fejl */
+    const persons = [];
+    persons.push(data);
+    const tableRow = personFacade.mapPerson(persons);
+    const tableRowAsString = tableRow.join("");
+    document.getElementById("allUserRows").innerHTML = tableRowAsString;
+  })
+  .catch(err => {
+    if (err.status) {
+      document.getElementById("error").style.display = "block"
+      err.fullError.then(e => {
+        document.getElementById("error").innerHTML = e.detail
+        console.log(e.detail)
+      })
+    }
+    else { console.log("Network error"); }
+  });
+}
 }
 /*Her slutter find person by id*/
 

@@ -48,6 +48,11 @@ function getById(id) {
         .then(handleHttpErrors)
 }
 
+function getByhobbyId(id) {
+    return fetch(SERVER_URL + "hobby/" + id)
+        .then(handleHttpErrors)
+}
+
 function addPerson(person) {
     const options = makeOptions("POST", person)
     return fetch(SERVER_URL, options)
@@ -66,6 +71,7 @@ const personFacade = {
     mapPerson,
     addPerson,
     editPerson,
+    getByhobbyId,
 }
 
 export default personFacade;
