@@ -1,6 +1,7 @@
 package rest;
 
 import dto.PersonDTO;
+import dto.PhoneDTO;
 import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
@@ -213,16 +214,19 @@ public class PersonResourceTest {
                 .body("gender", equalTo("Mand"))
                 .body("id", notNullValue());
     }
-    @Disabled
+    
     @Test
     public void testEditPerson() {
         PersonDTO peterParker = new PersonDTO(p1);
+        List<PhoneDTO> phones = new ArrayList<>();
+        phones.add(new PhoneDTO(new Phone("12344567","+47")));
         peterParker.setGender("spider");
+        peterParker.setPhones(phones);
         given()
                 .contentType("application/json")
                 .body(peterParker)
                 .when()
-                .put("/person/" + peterParker.getId())
+                .put("person/" + p1.getId())
                 .then()
                 .body("name", equalTo(peterParker.getName()))
                 .body("gender", equalTo(peterParker.getGender()))

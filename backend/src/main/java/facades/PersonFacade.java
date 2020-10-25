@@ -206,6 +206,7 @@ public class PersonFacade {
             }
             for (String phone : phones) {
                 if (!numbers.contains(phone)) {
+                    System.out.println(phone);
                     deletePhone(phone);
                 }
             }
