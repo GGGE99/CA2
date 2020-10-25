@@ -5,6 +5,7 @@
  */
 package facades;
 
+import dto.CityInfosDTO;
 import entities.CityInfo;
 import exceptions.PersonNotFoundException;
 import java.util.ArrayList;
@@ -17,7 +18,8 @@ import javax.persistence.EntityManagerFactory;
  * @author baske
  */
 public class CityInfoFacade {
-            private static CityInfoFacade instance;
+
+    private static CityInfoFacade instance;
     private static EntityManagerFactory emf;
 
     //Private Constructor to ensure Singleton
@@ -41,17 +43,18 @@ public class CityInfoFacade {
         return emf.createEntityManager();
     }
 
-    public List<CityInfo> getAllZips() {
+    public CityInfosDTO getAllZips() {
         EntityManager em = getEntityManager();
         try {
-            ArrayList<CityInfo> cityInfos = new ArrayList<>(em.createQuery("SELECT c FROM CityInfo c").getResultList()); 
-            return cityInfos;
+            List<CityInfo> cityInfos = (em.createQuery("SELECT c FROM CityInfo c", CityInfo.class).getResultList()); 
+            CityInfosDTO cityInfosDTO = new CityInfosDTO(cityInfos);
+            return cityInfosDTO;
         } finally {
             em.close();
         }
     }
-    
-        public CityInfo getCityInfo(String zipCode) throws PersonNotFoundException {
+
+    public CityInfo getCityInfo(String zipCode) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
 
         try {
